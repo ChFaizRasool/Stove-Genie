@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:stove_genie/pages/home/presentation/screen/home_screen.dart';
 import 'package:stove_genie/pages/sign_up/presentation/provider/check_box_provider.dart';
 import 'package:stove_genie/pages/sign_up/presentation/screen/sign_up_screen.dart';
+import 'package:stove_genie/pages/splash/presentation/screen/splash.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: const SignUpScreen(),
+        home: const SplashScreen(),
       ),
     );
   }
