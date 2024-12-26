@@ -27,7 +27,7 @@ class HomeBottomBar extends StatelessWidget {
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(), // Notch shape
         notchMargin: 10,
-        color: Colors.black,
+        // color: Colors.black,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: Row(
@@ -46,8 +46,8 @@ class HomeBottomBar extends StatelessWidget {
                   _buildNavItem(
                     context,
                     index: 1,
-                    icon: AppImages.saveUnselected,
-                    selectedIcon: AppImages.saveSelected,
+                    icon: AppImages.saveUnSelected,
+                    selectedIcon: AppImages.saveselected,
                   ),
                 ],
               ),
@@ -59,7 +59,7 @@ class HomeBottomBar extends StatelessWidget {
                     context,
                     index: 2,
                     icon: AppImages.notificatonUnselected,
-                    selectedIcon: AppImages.notificatonSelected,
+                    selectedIcon: AppImages.notificatonselected,
                   ),
                   _buildNavItem(
                     context,
