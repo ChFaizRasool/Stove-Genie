@@ -32,7 +32,7 @@ class GetCooking extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(
-                    width: getWidth(context)*0.55,
+                    width: getWidth(context) * 0.7,
                     child: Text(
                       'Get Cooking',
                       textAlign: TextAlign.center,
@@ -42,7 +42,9 @@ class GetCooking extends StatelessWidget {
                           fontWeight: FontWeight.w600),
                     ),
                   ),
-                  SizedBox(height: 5,),
+                  SizedBox(
+                    height: 5,
+                  ),
                   Text('Granting every foodie\'s wish',
                       style: GoogleFonts.poppins(
                           color: Colors.white,
@@ -54,7 +56,10 @@ class GetCooking extends StatelessWidget {
                   Center(
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>OnBoarding()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => OnBoarding()));
                       },
                       child: Container(
                         width: getWidth(context) * 0.45,
@@ -72,7 +77,10 @@ class GetCooking extends StatelessWidget {
                                       color: Colors.white,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600)),
-                              Icon(Icons.arrow_forward_ios_rounded,color: Colors.white,)
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: Colors.white,
+                              )
                             ],
                           ),
                         ),

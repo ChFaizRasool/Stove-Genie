@@ -1,37 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:stove_genie/pages/sign_in/presentation/screen/sign_in_screen.dart';
+import 'package:stove_genie/pages/bottom_bar/presentation/screen/bottombar_screen.dart';
 import 'package:stove_genie/pages/sign_up/presentation/widget/check_row.dart';
 import 'package:stove_genie/utils/colors.dart';
 import 'package:stove_genie/utils/images.dart';
 import 'package:stove_genie/widget/custom_button.dart';
 import 'package:stove_genie/widget/custom_text_field.dart';
 
-class SignUpField extends StatelessWidget {
-  const SignUpField({super.key});
+class SignInField extends StatelessWidget {
+  const SignInField({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        //  Full NAme
-        Text(
-          'Name',
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            color: AppColors.h1Color,
-          ),
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        CustomTextField(text: 'Enter Name'),
-        SizedBox(
-          height: 11,
-        ),
-
         //  Enter Email
         Text(
           'Email',
@@ -42,7 +25,7 @@ class SignUpField extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 5,
+          height: 8,
         ),
         CustomTextField(text: 'Enter Email'),
         SizedBox(
@@ -60,45 +43,39 @@ class SignUpField extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 5,
+          height: 8,
         ),
         CustomTextField(
           text: 'Enter Passwrod',
           isPass: true,
         ),
         SizedBox(
-          height: 11,
-        ),
-        //  Confirm Password
-        Text(
-          'Confirm Password',
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            color: AppColors.h1Color,
-          ),
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        CustomTextField(
-          text: 'Retype Password',
-        ),
-        SizedBox(
           height: 15,
         ),
-        CheckBoxRow(),
+        //  forget password
+        Text(
+          'Forgot Password?',
+          style: GoogleFonts.poppins(
+              fontSize: 11,
+              fontWeight: FontWeight.w400,
+              color: AppColors.buttonColor),
+        ),
         SizedBox(
-          height: 25,
+          height: 40,
         ),
 
         CustomButton(
           onTap: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => SignInScreen()));
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => HomeBottomBar()),
+              (route) => false,
+            );
           },
-          text: 'Sign Up',
+          text: 'Sign In',
           svgPicture: AppImages.forwodicon,
+        ),
+        SizedBox(
+          height: 25,
         ),
       ],
     );

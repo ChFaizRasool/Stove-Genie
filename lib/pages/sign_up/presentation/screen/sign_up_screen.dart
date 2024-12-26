@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:stove_genie/pages/sign_in/presentation/screen/sign_in_screen.dart';
 import 'package:stove_genie/pages/sign_up/presentation/widget/check_row.dart';
 import 'package:stove_genie/pages/sign_up/presentation/widget/divider_row.dart';
 import 'package:stove_genie/pages/sign_up/presentation/widget/sign_up_field.dart';
@@ -17,7 +18,7 @@ class SignUpScreen extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(
-              height: 100,
+              height: 50,
             ),
             signupText(context, "Create an account",
                 "Let’s help you set up your account, it won’t take long."),
@@ -37,6 +38,35 @@ class SignUpScreen extends StatelessWidget {
             SizedBox(
               height: 20,
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 115),
+              child: Row(
+                children: [
+                  Text(
+                    "Already a member?",
+                    style: GoogleFonts.poppins(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.blackColor,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => SignInScreen()));
+                    },
+                    child: Text(
+                      "Sign In",
+                      style: GoogleFonts.poppins(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.buttonColor,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
           ],
         ),
       ),

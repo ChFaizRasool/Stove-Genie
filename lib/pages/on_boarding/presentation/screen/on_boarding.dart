@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stove_genie/pages/on_boarding/presentation/screen/content_model.dart';
+import 'package:stove_genie/pages/sign_up/presentation/screen/sign_up_screen.dart';
 import 'package:stove_genie/utils/helper.dart';
 import 'package:stove_genie/utils/images.dart';
 
@@ -114,17 +115,25 @@ class _OnBoardingState extends State<OnBoarding> {
                   spacing: 35,
                   children: [
                     Expanded(
-                        child: Container(
-                      height: 54,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.white)),
-                      child: Center(
-                        child: Text('Skip',
-                            style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600)),
+                        child: GestureDetector(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignUpScreen()));
+                      },
+                      child: Container(
+                        height: 54,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.white)),
+                        child: Center(
+                          child: Text('Skip',
+                              style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600)),
+                        ),
                       ),
                     )),
                     Expanded(
@@ -140,7 +149,10 @@ class _OnBoardingState extends State<OnBoarding> {
                             curve: Curves.easeIn,
                           );
                         } else {
-                          // Navigator.pushReplacementNamed(context, '/login');
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignUpScreen()));
                         }
                       },
                       child: Container(
@@ -150,7 +162,10 @@ class _OnBoardingState extends State<OnBoarding> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Center(
-                          child: Text(currentIndex == contents.length - 1 ? 'Get Started' : 'Next',
+                          child: Text(
+                              currentIndex == contents.length - 1
+                                  ? 'Get Started'
+                                  : 'Next',
                               style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontSize: 16,

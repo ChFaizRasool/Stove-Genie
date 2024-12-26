@@ -4,8 +4,8 @@ import 'package:stove_genie/utils/colors.dart';
 import 'package:stove_genie/utils/images.dart';
 import 'package:stove_genie/widget/google_container.dart';
 
-class DividerRow extends StatelessWidget {
-  const DividerRow({super.key});
+class SignInDivierRow extends StatelessWidget {
+  const SignInDivierRow({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +16,18 @@ class DividerRow extends StatelessWidget {
           child: Row(
             children: [
               Expanded(child: Divider()),
+              SizedBox(
+                width: 8,
+              ),
               Text(
                 'Or Sign up With',
                 style: GoogleFonts.poppins(
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
                     color: AppColors.hinttextColor),
+              ),
+              SizedBox(
+                width: 8,
               ),
               Expanded(child: Divider()),
             ],
