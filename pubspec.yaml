@@ -40,6 +40,10 @@ dependencies:
   flutter_svg: ^2.0.16
   #  provider package
   provider: ^6.1.2
+  # otp field pacakge
+  flutter_otp_text_field: ^1.2.0
+  # badges pacakages
+  badges: ^3.1.2
 
 dev_dependencies:
   flutter_test:

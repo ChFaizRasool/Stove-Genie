@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stove_genie/pages/bottom_bar/presentation/screen/bottombar_screen.dart';
+import 'package:stove_genie/pages/forget_password/presentation/screen/forget_screen.dart';
 import 'package:stove_genie/pages/sign_up/presentation/widget/check_row.dart';
 import 'package:stove_genie/utils/colors.dart';
 import 'package:stove_genie/utils/images.dart';
@@ -53,12 +54,18 @@ class SignInField extends StatelessWidget {
           height: 15,
         ),
         //  forget password
-        Text(
-          'Forgot Password?',
-          style: GoogleFonts.poppins(
-              fontSize: 11,
-              fontWeight: FontWeight.w400,
-              color: AppColors.buttonColor),
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => ForgetScreen()));
+          },
+          child: Text(
+            'Forgot Password?',
+            style: GoogleFonts.poppins(
+                fontSize: 11,
+                fontWeight: FontWeight.w400,
+                color: AppColors.buttonColor),
+          ),
         ),
         SizedBox(
           height: 40,

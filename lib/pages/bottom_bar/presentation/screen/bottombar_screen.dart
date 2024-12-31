@@ -16,18 +16,17 @@ class HomeBottomBar extends StatelessWidget {
     NotificationScreen(),
     ProfileScreen(),
   ];
-
   @override
   Widget build(BuildContext context) {
     final bottomNavProvider = Provider.of<BottomNavProvider>(context);
-
     return Scaffold(
+      extendBody: true,
       body: screens[bottomNavProvider.currentIndex],
-      backgroundColor: Colors.white, // White background color
+      backgroundColor: Colors.white,
       bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(), // Notch shape
+        shape: const CircularNotchedRectangle(),
         notchMargin: 10,
-        // color: Colors.black,
+        color: AppColors.whiteColor,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: Row(
@@ -51,7 +50,6 @@ class HomeBottomBar extends StatelessWidget {
                   ),
                 ],
               ),
-              // Space for the Floating Action Button
               Row(
                 spacing: 40,
                 children: [

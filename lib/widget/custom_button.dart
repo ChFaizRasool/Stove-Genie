@@ -37,21 +37,26 @@ class CustomButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              if (svgPicture != null) ...[
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(svgPicture!),
+                  ],
+                ),
+                // const SizedBox(width: 8), // Spacing between icon and text
+              ],
+              SizedBox(
+                width: 16,
+              ),
               Text(
                 text,
                 style: GoogleFonts.poppins(
-                  fontSize: 16,
+                  fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: AppColors.whiteColor,
                 ),
               ),
-              SizedBox(
-                width: 16,
-              ),
-              if (svgPicture != null) ...[
-                SvgPicture.asset(svgPicture!),
-                const SizedBox(width: 8), // Spacing between icon and text
-              ],
             ],
           ),
         ),
