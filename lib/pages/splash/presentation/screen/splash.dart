@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:stove_genie/bloc/cubit/auth_cubit.dart';
+import 'package:stove_genie/core/di_container.dart';
+import 'package:stove_genie/pages/auth/auth_gate.dart';
 import 'package:stove_genie/pages/on_boarding/presentation/screen/get_cooking.dart';
 import 'package:stove_genie/utils/helper.dart';
 import 'dart:async';
@@ -13,11 +16,20 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   bool showLogo = false;
+
+  final _authCubit = Di().sl<AuthCubit>();
+
+  Future<void> getSelfInfo() async {
+    await _authCubit.getSelfInfo();
+  }
+
   @override
   void initState() {
     super.initState();
+    getSelfInfo();
     Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>GetCooking()));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => AuthGate()));
     });
   }
 

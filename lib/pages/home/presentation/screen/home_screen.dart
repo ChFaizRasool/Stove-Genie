@@ -5,7 +5,6 @@ import 'package:stove_genie/pages/home/presentation/widget/new_recipes.dart';
 import 'package:stove_genie/pages/home/presentation/widget/home_search_field.dart';
 import 'package:stove_genie/pages/home/presentation/widget/swtich_category.dart';
 import 'package:stove_genie/utils/colors.dart';
-import 'package:stove_genie/utils/helper.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

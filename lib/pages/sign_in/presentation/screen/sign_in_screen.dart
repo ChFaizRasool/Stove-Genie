@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:stove_genie/pages/bottom_bar/presentation/screen/bottombar_screen.dart';
 import 'package:stove_genie/pages/sign_in/presentation/widget/divider_row.dart';
 import 'package:stove_genie/pages/sign_in/presentation/widget/sign_in_field.dart';
 import 'package:stove_genie/pages/sign_up/presentation/screen/sign_up_screen.dart';
@@ -22,7 +21,11 @@ class SignInScreen extends StatelessWidget {
           SizedBox(
             height: getHeight(context) * 0.15,
           ),
-          signupText(context, "Hello,", "Welcome Back!"),
+          signupText(
+            context,
+            "Hello,",
+            "Welcome Back!",
+          ),
           SizedBox(
             height: 37,
           ),

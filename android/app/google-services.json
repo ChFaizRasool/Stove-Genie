@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "238511471890",
+    "project_id": "stovegenie-c825e",
+    "storage_bucket": "stovegenie-c825e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:238511471890:android:932b8ef12cc681808487cb",
+        "android_client_info": {
+          "package_name": "com.example.stove_genie"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCY0YRDMwrt-8-ZOy-6fKrzEyEGhC58Jvk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

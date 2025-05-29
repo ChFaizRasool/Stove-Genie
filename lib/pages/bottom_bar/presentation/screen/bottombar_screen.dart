@@ -5,6 +5,7 @@ import 'package:stove_genie/pages/bottom_bar/presentation/provider/bottom_bar_pr
 import 'package:stove_genie/pages/home/presentation/screen/home_screen.dart';
 import 'package:stove_genie/pages/notification_screen/presentation/screen/notification_screen.dart';
 import 'package:stove_genie/pages/profile_screen/presentation/screen/profile_screen.dart';
+import 'package:stove_genie/pages/recipe/screen/add_recipe_screen.dart';
 import 'package:stove_genie/pages/saved_recipes/presentation/screen/saved_recipes_screen.dart';
 import 'package:stove_genie/utils/colors.dart';
 import 'package:stove_genie/utils/images.dart';
@@ -16,6 +17,8 @@ class HomeBottomBar extends StatelessWidget {
     NotificationScreen(),
     ProfileScreen(),
   ];
+
+  const HomeBottomBar({super.key});
   @override
   Widget build(BuildContext context) {
     final bottomNavProvider = Provider.of<BottomNavProvider>(context);
@@ -79,16 +82,24 @@ class HomeBottomBar extends StatelessWidget {
       //     AppImages.plusIcon,
       //   ),
       // ),
-      floatingActionButton: Container(
-        height: 55,
-        width: 55,
-        decoration:
-            BoxDecoration(color: AppColors.buttonColor, shape: BoxShape.circle),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset(AppImages.plusIcon),
-          ],
+      floatingActionButton: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AddRecipeScreen()),
+          );
+        },
+        child: Container(
+          height: 55,
+          width: 55,
+          decoration: BoxDecoration(
+              color: AppColors.buttonColor, shape: BoxShape.circle),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(AppImages.plusIcon),
+            ],
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

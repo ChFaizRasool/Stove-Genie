@@ -1,14 +1,19 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:stove_genie/core/di_container.dart';
+import 'package:stove_genie/firebase_options.dart';
 import 'package:stove_genie/pages/bottom_bar/presentation/provider/bottom_bar_provider.dart';
-import 'package:stove_genie/pages/bottom_bar/presentation/screen/bottombar_screen.dart';
 import 'package:stove_genie/pages/home/presentation/provider/category_provider.dart';
-import 'package:stove_genie/pages/home/presentation/screen/home_screen.dart';
 import 'package:stove_genie/pages/sign_up/presentation/provider/check_box_provider.dart';
-import 'package:stove_genie/pages/sign_up/presentation/screen/sign_up_screen.dart';
 import 'package:stove_genie/pages/splash/presentation/screen/splash.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await Di().init();
   runApp(const MyApp());
 }
 

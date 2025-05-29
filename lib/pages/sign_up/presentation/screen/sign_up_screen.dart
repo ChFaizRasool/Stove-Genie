@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stove_genie/pages/sign_in/presentation/screen/sign_in_screen.dart';
-import 'package:stove_genie/pages/sign_up/presentation/widget/check_row.dart';
 import 'package:stove_genie/pages/sign_up/presentation/widget/divider_row.dart';
 import 'package:stove_genie/pages/sign_up/presentation/widget/sign_up_field.dart';
 import 'package:stove_genie/utils/colors.dart';

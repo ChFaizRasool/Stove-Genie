@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:stove_genie/bloc/cubit/auth_cubit.dart';
+import 'package:stove_genie/core/di_container.dart';
 import 'package:stove_genie/pages/mini_tv/presentation/screen/mini_tv_screen.dart';
 import 'package:stove_genie/utils/colors.dart';
 import 'package:stove_genie/utils/images.dart';
@@ -16,7 +18,7 @@ class HomeAppBar extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Hello Faiz!",
+              "Hello ${_authCubit.user.name}!",
               style: GoogleFonts.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
@@ -66,3 +68,5 @@ class HomeAppBar extends StatelessWidget {
     );
   }
 }
+
+final _authCubit = Di().sl<AuthCubit>();
