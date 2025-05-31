@@ -12,6 +12,8 @@ class RecipeModel with _$RecipeModel {
     @Default("") String calories,
     @Default(0.0) double rating,
     @Default("") String backgroundColor,
+    @Default("") String description,
+    @Default("") String category,
   }) = _RecipeModel;
 
   factory RecipeModel.fromJson(Map<String, dynamic> json) =>

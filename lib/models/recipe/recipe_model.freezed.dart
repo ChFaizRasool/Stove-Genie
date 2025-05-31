@@ -27,6 +27,8 @@ mixin _$RecipeModel {
   String get calories => throw _privateConstructorUsedError;
   double get rating => throw _privateConstructorUsedError;
   String get backgroundColor => throw _privateConstructorUsedError;
+  String get description => throw _privateConstructorUsedError;
+  String get category => throw _privateConstructorUsedError;
 
   /// Serializes this RecipeModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -51,7 +53,9 @@ abstract class $RecipeModelCopyWith<$Res> {
       String time,
       String calories,
       double rating,
-      String backgroundColor});
+      String backgroundColor,
+      String description,
+      String category});
 }
 
 /// @nodoc
@@ -76,6 +80,8 @@ class _$RecipeModelCopyWithImpl<$Res, $Val extends RecipeModel>
     Object? calories = null,
     Object? rating = null,
     Object? backgroundColor = null,
+    Object? description = null,
+    Object? category = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -106,6 +112,14 @@ class _$RecipeModelCopyWithImpl<$Res, $Val extends RecipeModel>
           ? _value.backgroundColor
           : backgroundColor // ignore: cast_nullable_to_non_nullable
               as String,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      category: null == category
+          ? _value.category
+          : category // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -125,7 +139,9 @@ abstract class _$$RecipeModelImplCopyWith<$Res>
       String time,
       String calories,
       double rating,
-      String backgroundColor});
+      String backgroundColor,
+      String description,
+      String category});
 }
 
 /// @nodoc
@@ -148,6 +164,8 @@ class __$$RecipeModelImplCopyWithImpl<$Res>
     Object? calories = null,
     Object? rating = null,
     Object? backgroundColor = null,
+    Object? description = null,
+    Object? category = null,
   }) {
     return _then(_$RecipeModelImpl(
       id: null == id
@@ -178,6 +196,14 @@ class __$$RecipeModelImplCopyWithImpl<$Res>
           ? _value.backgroundColor
           : backgroundColor // ignore: cast_nullable_to_non_nullable
               as String,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      category: null == category
+          ? _value.category
+          : category // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -192,7 +218,9 @@ class _$RecipeModelImpl implements _RecipeModel {
       this.time = "",
       this.calories = "",
       this.rating = 0.0,
-      this.backgroundColor = ""});
+      this.backgroundColor = "",
+      this.description = "",
+      this.category = ""});
 
   factory _$RecipeModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$RecipeModelImplFromJson(json);
@@ -218,10 +246,16 @@ class _$RecipeModelImpl implements _RecipeModel {
   @override
   @JsonKey()
   final String backgroundColor;
+  @override
+  @JsonKey()
+  final String description;
+  @override
+  @JsonKey()
+  final String category;
 
   @override
   String toString() {
-    return 'RecipeModel(id: $id, title: $title, image: $image, time: $time, calories: $calories, rating: $rating, backgroundColor: $backgroundColor)';
+    return 'RecipeModel(id: $id, title: $title, image: $image, time: $time, calories: $calories, rating: $rating, backgroundColor: $backgroundColor, description: $description, category: $category)';
   }
 
   @override
@@ -237,13 +271,17 @@ class _$RecipeModelImpl implements _RecipeModel {
                 other.calories == calories) &&
             (identical(other.rating, rating) || other.rating == rating) &&
             (identical(other.backgroundColor, backgroundColor) ||
-                other.backgroundColor == backgroundColor));
+                other.backgroundColor == backgroundColor) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
+            (identical(other.category, category) ||
+                other.category == category));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, title, image, time, calories, rating, backgroundColor);
+  int get hashCode => Object.hash(runtimeType, id, title, image, time, calories,
+      rating, backgroundColor, description, category);
 
   /// Create a copy of RecipeModel
   /// with the given fields replaced by the non-null parameter values.
@@ -269,7 +307,9 @@ abstract class _RecipeModel implements RecipeModel {
       final String time,
       final String calories,
       final double rating,
-      final String backgroundColor}) = _$RecipeModelImpl;
+      final String backgroundColor,
+      final String description,
+      final String category}) = _$RecipeModelImpl;
 
   factory _RecipeModel.fromJson(Map<String, dynamic> json) =
       _$RecipeModelImpl.fromJson;
@@ -288,6 +328,10 @@ abstract class _RecipeModel implements RecipeModel {
   double get rating;
   @override
   String get backgroundColor;
+  @override
+  String get description;
+  @override
+  String get category;
 
   /// Create a copy of RecipeModel
   /// with the given fields replaced by the non-null parameter values.

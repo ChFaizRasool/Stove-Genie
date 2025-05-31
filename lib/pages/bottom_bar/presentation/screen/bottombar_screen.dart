@@ -1,77 +1,76 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:stove_genie/pages/bottom_bar/presentation/provider/bottom_bar_provider.dart';
-import 'package:stove_genie/pages/home/presentation/screen/home_screen.dart';
-import 'package:stove_genie/pages/notification_screen/presentation/screen/notification_screen.dart';
-import 'package:stove_genie/pages/profile_screen/presentation/screen/profile_screen.dart';
+import 'package:stove_genie/bloc/cubit/bottom_bar_cubit.dart';
+import 'package:stove_genie/core/di_container.dart';
 import 'package:stove_genie/pages/recipe/screen/add_recipe_screen.dart';
-import 'package:stove_genie/pages/saved_recipes/presentation/screen/saved_recipes_screen.dart';
 import 'package:stove_genie/utils/colors.dart';
 import 'package:stove_genie/utils/images.dart';
 
 class HomeBottomBar extends StatelessWidget {
-  final List<Widget> screens = const [
-    HomeScreen(),
-    SavedRecipesScreen(),
-    NotificationScreen(),
-    ProfileScreen(),
-  ];
-
   const HomeBottomBar({super.key});
   @override
   Widget build(BuildContext context) {
-    final bottomNavProvider = Provider.of<BottomNavProvider>(context);
     return Scaffold(
       extendBody: true,
-      body: screens[bottomNavProvider.currentIndex],
+      body: BlocBuilder(
+        bloc: _bottomBarCubit,
+        builder: (context, state) {
+          return _bottomBarCubit.screens[_bottomBarCubit.currentIndex];
+        },
+      ),
       backgroundColor: Colors.white,
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: 10,
         color: AppColors.whiteColor,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                spacing: 40,
+        child: BlocBuilder(
+          bloc: _bottomBarCubit,
+          builder: (context, state) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildNavItem(
-                    context,
-                    index: 0,
-                    icon: AppImages.homeunSelected,
-                    selectedIcon: AppImages.homeSelected,
+                  Row(
+                    spacing: 40,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildNavItem(
+                        context,
+                        index: 0,
+                        icon: AppImages.homeunSelected,
+                        selectedIcon: AppImages.homeSelected,
+                      ),
+                      _buildNavItem(
+                        context,
+                        index: 1,
+                        icon: AppImages.saveUnSelected,
+                        selectedIcon: AppImages.saveselected,
+                      ),
+                    ],
                   ),
-                  _buildNavItem(
-                    context,
-                    index: 1,
-                    icon: AppImages.saveUnSelected,
-                    selectedIcon: AppImages.saveselected,
-                  ),
+                  Row(
+                    spacing: 40,
+                    children: [
+                      _buildNavItem(
+                        context,
+                        index: 2,
+                        icon: AppImages.notificatonUnselected,
+                        selectedIcon: AppImages.notificatonselected,
+                      ),
+                      _buildNavItem(
+                        context,
+                        index: 3,
+                        icon: AppImages.profileunseleted,
+                        selectedIcon: AppImages.profileSeleted,
+                      ),
+                    ],
+                  )
                 ],
               ),
-              Row(
-                spacing: 40,
-                children: [
-                  _buildNavItem(
-                    context,
-                    index: 2,
-                    icon: AppImages.notificatonUnselected,
-                    selectedIcon: AppImages.notificatonselected,
-                  ),
-                  _buildNavItem(
-                    context,
-                    index: 3,
-                    icon: AppImages.profileunseleted,
-                    selectedIcon: AppImages.profileSeleted,
-                  ),
-                ],
-              )
-            ],
-          ),
+            );
+          },
         ),
       ),
       // floatingActionButton: FloatingActionButton(
@@ -110,19 +109,17 @@ class HomeBottomBar extends StatelessWidget {
       {required int index,
       required String icon,
       required String selectedIcon}) {
-    final bottomNavProvider = Provider.of<BottomNavProvider>(context);
-
     return GestureDetector(
-      onTap: () => bottomNavProvider.setIndex(index),
+      onTap: () => _bottomBarCubit.setIndex(index),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SvgPicture.asset(
-            bottomNavProvider.currentIndex == index ? selectedIcon : icon,
+            _bottomBarCubit.currentIndex == index ? selectedIcon : icon,
           ),
           // const SizedBox(height: 5),
-          // if (bottomNavProvider.currentIndex == index)
+          // if (_bottomBarCubit.currentIndex == index)
           //   // Container(
           //   //   height: 4,
           //   //   width: 4,
@@ -135,3 +132,5 @@ class HomeBottomBar extends StatelessWidget {
     );
   }
 }
+
+final _bottomBarCubit = Di().sl<BottomBarCubit>();

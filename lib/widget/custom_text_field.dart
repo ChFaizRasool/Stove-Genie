@@ -96,7 +96,7 @@ class CustomTextField extends StatelessWidget {
         hintStyle: GoogleFonts.poppins(
           fontSize: 11,
           fontWeight: FontWeight.w400,
-          color: AppColors.hinttextColor,
+          color: AppColors.blackColor.withOpacity(.5),
         ),
         suffixIcon: xicon,
         contentPadding: const EdgeInsets.symmetric(

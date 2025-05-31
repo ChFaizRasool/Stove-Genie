@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 
-class CheckBoxProvider with ChangeNotifier {
-  bool _isChecked = false;
+// class CheckBoxProvider with ChangeNotifier {
+//   bool _isChecked = false;
 
-  bool get isChecked => _isChecked;
+//   bool get isChecked => _isChecked;
 
-  void toggleCheck(bool value) {
-    _isChecked = value;
-    notifyListeners();
-  }
-}
+//   void toggleCheck(bool value) {
+//     _isChecked = value;
+//     notifyListeners();
+//   }
+// }

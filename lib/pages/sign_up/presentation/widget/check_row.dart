@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:stove_genie/bloc/cubit/recipe_cubit.dart';
+import 'package:stove_genie/core/di_container.dart';
 import 'package:stove_genie/pages/sign_up/presentation/provider/check_box_provider.dart';
 
 import 'package:stove_genie/utils/colors.dart';
@@ -12,8 +15,9 @@ class CheckBoxRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Consumer<CheckBoxProvider>(
-          builder: (context, checkBoxProvider, _) {
+        BlocBuilder(
+          bloc: _recipeCubit,
+          builder: (context, state) {
             return Checkbox(
               checkColor: AppColors.whiteColor,
               activeColor: AppColors.textColor,
@@ -21,9 +25,9 @@ class CheckBoxRow extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
               ),
-              value: checkBoxProvider.isChecked,
+              value: _recipeCubit.isChecked,
               onChanged: (value) {
-                checkBoxProvider.toggleCheck(value!);
+                _recipeCubit.toggleCheck(value!);
               },
             );
           },
@@ -39,3 +43,5 @@ class CheckBoxRow extends StatelessWidget {
     );
   }
 }
+
+final _recipeCubit = Di().sl<RecipeCubit>();

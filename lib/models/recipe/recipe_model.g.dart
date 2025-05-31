@@ -15,6 +15,8 @@ _$RecipeModelImpl _$$RecipeModelImplFromJson(Map<String, dynamic> json) =>
       calories: json['calories'] as String? ?? "",
       rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
       backgroundColor: json['backgroundColor'] as String? ?? "",
+      description: json['description'] as String? ?? "",
+      category: json['category'] as String? ?? "",
     );
 
 Map<String, dynamic> _$$RecipeModelImplToJson(_$RecipeModelImpl instance) =>
@@ -26,4 +28,6 @@ Map<String, dynamic> _$$RecipeModelImplToJson(_$RecipeModelImpl instance) =>
       'calories': instance.calories,
       'rating': instance.rating,
       'backgroundColor': instance.backgroundColor,
+      'description': instance.description,
+      'category': instance.category,
     };

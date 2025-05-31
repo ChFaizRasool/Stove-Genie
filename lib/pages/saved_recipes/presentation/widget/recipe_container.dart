@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:stove_genie/pages/recipe_details/presentation/screen/recipe_details.dart';
 
 import 'package:stove_genie/utils/helper.dart';
+import 'package:stove_genie/utils/images.dart';
 
 class RecipeContainer extends StatelessWidget {
   final String? imgPath;
@@ -39,8 +40,9 @@ class RecipeContainer extends StatelessWidget {
           decoration: BoxDecoration(
             image: imgPath != null
                 ? DecorationImage(
-                    image: AssetImage(imgPath!), fit: BoxFit.cover)
-                : null,
+                    image: AssetImage('assets/images/menu.png'),
+                    fit: BoxFit.cover)
+                : DecorationImage(image: AssetImage(AppImages.logoImage)),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Stack(
@@ -107,7 +109,7 @@ class RecipeContainer extends StatelessWidget {
                           ? SizedBox(
                               width: getWidth(context) * 0.6,
                               child: Text(
-                                recipeName!,
+                                recipeName ?? '',
                                 maxLines: 2,
                                 style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w600,

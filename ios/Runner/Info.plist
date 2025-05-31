@@ -4,6 +4,10 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Need camera access to take photos</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Need photo library access to select photos</string>
 	<key>CFBundleDisplayName</key>
 	<string>Stove Genie</string>
 	<key>CFBundleExecutable</key>
