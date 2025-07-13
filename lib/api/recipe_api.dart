@@ -10,21 +10,28 @@ abstract class RecipeApi {
 class RecipeApiImpl extends RecipeApi {
   @override
   Future<Either<String, String>> addRecipe({RecipeModel? recipeData}) async {
-    try {
-      final docRef = FirebaseFirestore.instance.collection('recipes').doc();
+    final docRef = FirebaseFirestore.instance.collection('recipes').doc();
 
-      await FirebaseFirestore.instance.collection('recipes').doc().set({
-        'recipeId': docRef,
+    try {
+      await FirebaseFirestore.instance
+          .collection('recipes')
+          .doc(docRef.id)
+          .set({
+        'recipeId': recipeData?.id,
         'title': recipeData?.title,
         'description': recipeData?.description,
         'image': recipeData?.image,
         'time': recipeData?.time,
         'calories': recipeData?.calories,
-        'rating': 0,
+        'rating': recipeData?.rating,
         'category': recipeData?.category,
+        'steps': recipeData?.steps,
+        'ingredients': recipeData?.ingredients,
+        'userId': recipeData?.userId,
+        'reviews': recipeData?.reviews ?? [],
         'createdAt': DateTime.now().toIso8601String(),
       });
-      return Right(docRef.id);
+      return Right(recipeData?.id ?? '');
     } catch (e) {
       return Left(e.toString());
     }

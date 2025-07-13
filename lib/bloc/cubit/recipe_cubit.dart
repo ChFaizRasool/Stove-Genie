@@ -15,6 +15,7 @@ class RecipeCubit extends Cubit<RecipeState> {
   RecipeCubit(this._recipeApi) : super(RecipeInitial());
 
   List<RecipeModel> recipeData = [];
+  RecipeModel? singleRecipeData;
   File? selectedRecipeImage;
 
   int currentIndex = 0;

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stove_genie/bloc/cubit/recipe_cubit.dart';
@@ -25,18 +27,28 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
 
   final _recipeCubit = Di().sl<RecipeCubit>();
   String? selectedCategory;
+  List<String> recipeSteps = [];
+  List<String> ingredients = [];
+  final TextEditingController stepController = TextEditingController();
+  final TextEditingController ingredientsController = TextEditingController();
+  final userId = FirebaseAuth.instance.currentUser?.uid;
 
   void _saveRecipe() {
     if (_formKey.currentState!.validate()) {
+      final docRef = FirebaseFirestore.instance.collection('recipes').doc();
       _recipeCubit.addRecipe(
         context: context,
         recipe: RecipeModel(
-          title: titleController.text,
-          description: descriptionController.text,
-          calories: caloriesController.text,
-          time: timeController.text,
-          image: _recipeCubit.selectedRecipeImage?.path ?? '',
-        ),
+            id: docRef.id,
+            userId: userId ?? '',
+            title: titleController.text,
+            description: descriptionController.text,
+            calories: caloriesController.text,
+            time: timeController.text,
+            image: _recipeCubit.selectedRecipeImage?.path ?? '',
+            category: selectedCategory ?? '',
+            steps: recipeSteps,
+            ingredients: ingredients),
       );
     }
   }
@@ -68,6 +80,84 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                     _buildInput("Description", descriptionController),
                     _buildInput("Time", timeController),
                     _buildInput("Calories", caloriesController),
+                    TextFormField(
+                      controller: ingredientsController,
+                      decoration: InputDecoration(
+                        labelText: 'Add Ingrediants',
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.add),
+                          onPressed: () {
+                            if (ingredientsController.text.trim().isNotEmpty) {
+                              setState(() {
+                                ingredients
+                                    .add(ingredientsController.text.trim());
+                                ingredientsController.clear();
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: ingredients.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          leading: CircleAvatar(child: Text('${index + 1}')),
+                          title: Text(ingredients[index]),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              setState(() {
+                                ingredients.removeAt(index);
+                              });
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      controller: stepController,
+                      decoration: InputDecoration(
+                        labelText: 'Add Step',
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.add),
+                          onPressed: () {
+                            if (stepController.text.trim().isNotEmpty) {
+                              setState(() {
+                                recipeSteps.add(stepController.text.trim());
+                                stepController.clear();
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: recipeSteps.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          leading: CircleAvatar(child: Text('${index + 1}')),
+                          title: Text(recipeSteps[index]),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              setState(() {
+                                recipeSteps.removeAt(index);
+                              });
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 20),
+
                     SizedBox(
                       height: 52,
                       child: CategoryDropdownField(

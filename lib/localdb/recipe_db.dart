@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:stove_genie/models/recipe/recipe_model.dart';
@@ -34,7 +36,11 @@ class RecipeDbHelper {
             rating REAL,
             backgroundColor TEXT,
             description TEXT,
-            category TEXT
+            category TEXT,
+            steps TEXT,
+            ingredients TEXT
+            reviews TEXT
+
           )
         ''');
       },
@@ -43,9 +49,15 @@ class RecipeDbHelper {
 
   Future<void> insertRecipe(RecipeModel recipe) async {
     final db = await database;
+    final data = recipe.toJson();
+
+    // Serialize lists to JSON strings
+    data['steps'] = jsonEncode(recipe.steps);
+    data['ingredients'] = jsonEncode(recipe.ingredients);
+
     await db.insert(
       'recipes',
-      recipe.toJson(),
+      data,
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -54,7 +66,20 @@ class RecipeDbHelper {
     final db = await database;
     final maps = await db.query('recipes');
 
-    return maps.map((map) => RecipeModel.fromJson(map)).toList();
+    return maps.map((map) {
+      final stepsJson = map['steps'];
+      final ingredientsJson = map['ingredients'];
+
+      if (stepsJson is String) {
+        map['steps'] = jsonDecode(stepsJson);
+      }
+
+      if (ingredientsJson is String) {
+        map['ingredients'] = jsonDecode(ingredientsJson);
+      }
+
+      return RecipeModel.fromJson(map);
+    }).toList();
   }
 
   Future<void> deleteRecipe(String id) async {

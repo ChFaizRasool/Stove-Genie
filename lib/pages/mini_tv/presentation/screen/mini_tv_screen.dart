@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+
 import 'package:google_fonts/google_fonts.dart';
-import 'package:stove_genie/utils/colors.dart';
 
 class MiniTvScreen extends StatefulWidget {
   const MiniTvScreen({super.key});
@@ -11,96 +9,742 @@ class MiniTvScreen extends StatefulWidget {
   State<MiniTvScreen> createState() => _MiniTvScreenState();
 }
 
-class _MiniTvScreenState extends State<MiniTvScreen> {
-  final String apiKey =
-      'https://developers.google.com/youtube/code_samples#youtube-data-api-v3';
-  final List<String> channelIds = [
-    'UCX6OQ3DkcsbYNE6H8uQQuVA', // MrBeast
-    'UCE_M8A5yxnLfW0KghEeajjw', // Apple
-    'UC-9-kyTW8ZkZNDHQJ6FgpwQ', // Music
+class _MiniTvScreenState extends State<MiniTvScreen>
+    with TickerProviderStateMixin {
+  final String apiKey = 'AIzaSyD4FlR-bxLe4cPsXZJO0NlhOD6hDlOCnj8';
+  bool useMockData = true;
+
+  final List<Map<String, String>> foodChannels = [
+    {'id': 'UCqFzWxSCi39LnW1JKFR3efg', 'name': 'Tasty'},
+    {'id': 'UCbpMy0Fg74eXXkvxJrtEn3w', 'name': 'Bon Appétit'},
+    {'id': 'UCRIYplQFdur_mHLBJIDwZww', 'name': 'Food Network'},
+    {'id': 'UCekQr9znsk2vWxBo3YiLq2w', 'name': 'Binging with Babish'},
+    {'id': 'UCsaGKqPZnGp_7N80hcHySGQ', 'name': 'Maangchi'},
+    {'id': 'UCVVAnxQ2YMC_qlc7QfPA2YQ', 'name': 'Brothers Green Eats'},
   ];
 
   List<Map<String, dynamic>> channels = [];
+  List<Map<String, dynamic>> videos = [];
   bool isLoading = true;
+  bool showVideos = false;
+  String selectedChannelName = '';
+
+  late AnimationController _fadeController;
+  late AnimationController _slideController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
     super.initState();
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _slideController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _fadeController, curve: Curves.easeIn),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(1.0, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _slideController, curve: Curves.easeOut));
+
     fetchChannelData();
   }
 
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    _slideController.dispose();
+    super.dispose();
+  }
+
   Future<void> fetchChannelData() async {
-    List<Map<String, dynamic>> fetchedChannels = [];
-
-    for (String id in channelIds) {
-      final url = Uri.parse(
-        'https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=$id&key=$apiKey',
-      );
-
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['items'] != null && data['items'].isNotEmpty) {
-          final item = data['items'][0];
-          fetchedChannels.add({
-            'title': item['snippet']['title'],
-            'thumbnail': item['snippet']['thumbnails']['high']['url'],
-            'subscribers': item['statistics']['subscriberCount'],
-            'videos': item['statistics']['videoCount'],
-            'views': item['statistics']['viewCount'],
-          });
-        }
-      }
+    if (apiKey == 'YOUR_YOUTUBE_API_KEY_HERE' || useMockData) {
+      await Future.delayed(const Duration(seconds: 2));
+      setState(() {
+        channels = _getMockChannelData();
+        isLoading = false;
+      });
+      _fadeController.forward();
+      return;
     }
+    // Rest of your API logic here...
+  }
 
+  Future<void> fetchChannelVideos(String channelId, String channelName) async {
     setState(() {
-      channels = fetchedChannels;
-      isLoading = false;
+      isLoading = true;
+      showVideos = true;
+      selectedChannelName = channelName;
     });
+
+    if (apiKey == 'YOUR_YOUTUBE_API_KEY_HERE' || useMockData) {
+      await Future.delayed(const Duration(seconds: 2));
+      setState(() {
+        videos = _getMockVideoData();
+        isLoading = false;
+      });
+      _slideController.forward();
+      return;
+    }
+    // Rest of your API logic here...
+  }
+
+  String _formatCount(String count) {
+    int number = int.tryParse(count) ?? 0;
+    if (number >= 1000000) {
+      return '${(number / 1000000).toStringAsFixed(1)}M';
+    } else if (number >= 1000) {
+      return '${(number / 1000).toStringAsFixed(1)}K';
+    }
+    return number.toString();
+  }
+
+  List<Map<String, dynamic>> _getMockChannelData() {
+    return [
+      {
+        'id': 'mock1',
+        'title': 'Tasty',
+        'thumbnail': 'https://picsum.photos/200/200?random=1',
+        'subscribers': '21.2M',
+        'videos': '4500',
+        'views': '12.5B',
+        'description': 'Food videos that make cooking fun and accessible.',
+      },
+      {
+        'id': 'mock2',
+        'title': 'Bon Appétit',
+        'thumbnail': 'https://picsum.photos/200/200?random=2',
+        'subscribers': '6.1M',
+        'videos': '3200',
+        'views': '1.8B',
+        'description': 'Cooking videos from the Bon Appétit test kitchen.',
+      },
+      {
+        'id': 'mock3',
+        'title': 'Food Network',
+        'thumbnail': 'https://picsum.photos/200/200?random=3',
+        'subscribers': '9.2M',
+        'videos': '15000',
+        'views': '7.3B',
+        'description':
+            'Official Food Network channel with recipes and cooking shows.',
+      },
+      {
+        'id': 'mock4',
+        'title': 'Binging with Babish',
+        'thumbnail': 'https://picsum.photos/200/200?random=4',
+        'subscribers': '10.1M',
+        'videos': '800',
+        'views': '2.1B',
+        'description': 'Recreating foods from movies, TV shows, and more.',
+      },
+      {
+        'id': 'mock5',
+        'title': 'Maangchi',
+        'thumbnail': 'https://picsum.photos/200/200?random=5',
+        'subscribers': '6.5M',
+        'videos': '500',
+        'views': '890M',
+        'description': 'Authentic Korean cooking recipes and techniques.',
+      },
+    ];
+  }
+
+  List<Map<String, dynamic>> _getMockVideoData() {
+    return [
+      {
+        'videoId': 'mock_video_1',
+        'title': 'Easy 15-Minute Pasta Recipe',
+        'thumbnail': 'https://picsum.photos/400/300?random=10',
+        'channelTitle': 'Tasty',
+        'publishedAt': '2024-07-01T10:00:00Z',
+        'description':
+            'Learn how to make delicious pasta in just 15 minutes with simple ingredients.',
+      },
+      {
+        'videoId': 'mock_video_2',
+        'title': 'Perfect Chocolate Chip Cookies',
+        'thumbnail': 'https://picsum.photos/400/300?random=11',
+        'channelTitle': 'Tasty',
+        'publishedAt': '2024-06-28T14:30:00Z',
+        'description':
+            'The ultimate chocolate chip cookie recipe that will make your kitchen smell amazing.',
+      },
+      {
+        'videoId': 'mock_video_3',
+        'title': 'Homemade Pizza From Scratch',
+        'thumbnail': 'https://picsum.photos/400/300?random=12',
+        'channelTitle': 'Tasty',
+        'publishedAt': '2024-06-25T09:15:00Z',
+        'description':
+            'Make restaurant-quality pizza at home with this step-by-step guide.',
+      },
+      {
+        'videoId': 'mock_video_4',
+        'title': 'Fresh Summer Salad Ideas',
+        'thumbnail': 'https://picsum.photos/400/300?random=13',
+        'channelTitle': 'Tasty',
+        'publishedAt': '2024-06-20T16:45:00Z',
+        'description':
+            'Refreshing and healthy salad recipes perfect for hot summer days.',
+      },
+      {
+        'videoId': 'mock_video_5',
+        'title': 'Grilled Chicken Masterclass',
+        'thumbnail': 'https://picsum.photos/400/300?random=14',
+        'channelTitle': 'Tasty',
+        'publishedAt': '2024-06-18T11:20:00Z',
+        'description':
+            'Learn the secrets to perfectly grilled chicken every time.',
+      },
+    ];
+  }
+
+  String _formatDate(String dateString) {
+    DateTime date = DateTime.parse(dateString);
+    Duration difference = DateTime.now().difference(date);
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays} days ago';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours} hours ago';
+    } else {
+      return '${difference.inMinutes} minutes ago';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
-      appBar: AppBar(
-        title: Text(
-          'Mini Tv',
-          style: GoogleFonts.poppins(
-              fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
+      backgroundColor: const Color(0xFFF8F9FA), // Light background
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFFFFFFF),
+              Color(0xFFF8F9FA),
+            ],
+          ),
         ),
-        backgroundColor: AppColors.whiteColor,
-        elevation: 0,
-        centerTitle: true,
+        child: SafeArea(
+          child: Column(
+            children: [
+              _buildTVHeader(),
+              Expanded(
+                child: isLoading ? _buildLoadingScreen() : _buildMainContent(),
+              ),
+            ],
+          ),
+        ),
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              padding: const EdgeInsets.all(20),
-              itemCount: channels.length,
-              itemBuilder: (context, index) {
-                final channel = channels[index];
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 20),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(channel['thumbnail']),
-                      radius: 30,
-                    ),
-                    title: Text(channel['title'],
-                        style: GoogleFonts.poppins(
-                            fontSize: 16, fontWeight: FontWeight.w600)),
-                    subtitle: Text(
-                      '${channel['subscribers']} subscribers\n${channel['videos']} videos • ${channel['views']} views',
-                      style: GoogleFonts.poppins(fontSize: 12),
-                    ),
-                    isThreeLine: true,
-                  ),
-                );
-              },
+    );
+  }
+
+  Widget _buildTVHeader() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+        border: Border(
+          bottom: BorderSide(
+            color: const Color(0xFF6C63FF).withOpacity(0.2),
+            width: 2,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF6C63FF), Color(0xFF5A52FF)],
+              ),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF6C63FF).withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.live_tv, color: Colors.white, size: 16),
+                const SizedBox(width: 5),
+                Text(
+                  'LIVE',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 15),
+          Text(
+            showVideos ? selectedChannelName : 'Food Channels',
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF2D3748),
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const Spacer(),
+          if (showVideos)
+            GestureDetector(
+              onTap: () {
+                _slideController.reverse().then((_) {
+                  setState(() {
+                    showVideos = false;
+                    videos.clear();
+                    selectedChannelName = '';
+                  });
+                  _fadeController.forward();
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF7FAFC),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                ),
+                child: const Icon(
+                  Icons.arrow_back,
+                  color: Color(0xFF4A5568),
+                  size: 20,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadingScreen() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: const LinearGradient(
+                colors: [Color(0xFF6C63FF), Color(0xFF9F7AEA)],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF6C63FF).withOpacity(0.3),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
+            ),
+            child: const Center(
+              child: CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 3,
+              ),
+            ),
+          ),
+          const SizedBox(height: 30),
+          Text(
+            'Loading Content...',
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF4A5568),
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Container(
+            width: 200,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(2),
+            ),
+            child: FractionallySizedBox(
+              widthFactor: 0.7,
+              alignment: Alignment.centerLeft,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF6C63FF), Color(0xFF9F7AEA)],
+                  ),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMainContent() {
+    return showVideos ? _buildVideosList() : _buildChannelsList();
+  }
+
+  Widget _buildChannelsList() {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: GridView.builder(
+        padding: const EdgeInsets.all(20),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.8,
+          crossAxisSpacing: 15,
+          mainAxisSpacing: 15,
+        ),
+        itemCount: channels.length,
+        itemBuilder: (context, index) {
+          final channel = channels[index];
+          return GestureDetector(
+            onTap: () {
+              _fadeController.reverse().then((_) {
+                fetchChannelVideos(channel['id'], channel['title']);
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+                border: Border.all(
+                  color: Colors.grey.withOpacity(0.1),
+                  width: 1,
+                ),
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                      width: double.infinity,
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(16),
+                        ),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Image.network(
+                              channel['thumbnail'],
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: const Color(0xFFF7FAFC),
+                                  child: const Icon(
+                                    Icons.tv,
+                                    color: Color(0xFF9CA3AF),
+                                    size: 50,
+                                  ),
+                                );
+                              },
+                            ),
+                            Positioned(
+                              top: 8,
+                              right: 8,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.9),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      width: 6,
+                                      height: 6,
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFF10B981),
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'Live',
+                                      style: GoogleFonts.poppins(
+                                        color: const Color(0xFF374151),
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            channel['title'],
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF1A202C),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 6),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.people_outline,
+                                color: const Color(0xFF6C63FF),
+                                size: 14,
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  '${channel['subscribers']} subscribers',
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFF718096),
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.video_library_outlined,
+                                color: const Color(0xFF9F7AEA),
+                                size: 14,
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  '${channel['videos']} videos',
+                                  style: GoogleFonts.poppins(
+                                    color: const Color(0xFF718096),
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildVideosList() {
+    return SlideTransition(
+      position: _slideAnimation,
+      child: ListView.builder(
+        padding: const EdgeInsets.all(20),
+        itemCount: videos.length,
+        itemBuilder: (context, index) {
+          final video = videos[index];
+          return Container(
+            margin: const EdgeInsets.only(bottom: 20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  blurRadius: 15,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+              border: Border.all(
+                color: Colors.grey.withOpacity(0.1),
+                width: 1,
+              ),
+            ),
+            child: Column(
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                  child: Stack(
+                    children: [
+                      Image.network(
+                        video['thumbnail'],
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            height: 200,
+                            color: const Color(0xFFF7FAFC),
+                            child: const Center(
+                              child: Icon(
+                                Icons.video_library_outlined,
+                                color: Color(0xFF9CA3AF),
+                                size: 50,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      Positioned(
+                        child: Container(
+                          padding: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.9),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                blurRadius: 10,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.play_arrow,
+                            color: Color(0xFF6C63FF),
+                            size: 30,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 10,
+                        right: 10,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            _formatDate(video['publishedAt']),
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF4A5568),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        video['title'],
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF1A202C),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF6C63FF), Color(0xFF9F7AEA)],
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.account_circle,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            video['channelTitle'],
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF4A5568),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        video['description'],
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF718096),
+                          fontSize: 13,
+                          height: 1.5,
+                        ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

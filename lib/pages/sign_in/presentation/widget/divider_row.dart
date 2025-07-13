@@ -40,8 +40,8 @@ class SignInDivierRow extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GoogleContainer(image: AppImages.googleImage),
-              SizedBox(width: 20),
-              GoogleContainer(image: AppImages.facebookImage),
+              // SizedBox(width: 20),
+              // GoogleContainer(image: AppImages.facebookImage),
             ],
           ),
         ),

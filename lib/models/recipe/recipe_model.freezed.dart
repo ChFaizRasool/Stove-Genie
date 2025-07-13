@@ -21,6 +21,7 @@ RecipeModel _$RecipeModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$RecipeModel {
   String get id => throw _privateConstructorUsedError;
+  String get userId => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get image => throw _privateConstructorUsedError;
   String get time => throw _privateConstructorUsedError;
@@ -29,6 +30,9 @@ mixin _$RecipeModel {
   String get backgroundColor => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get category => throw _privateConstructorUsedError;
+  List<Map<String, dynamic>> get reviews => throw _privateConstructorUsedError;
+  List<String> get steps => throw _privateConstructorUsedError;
+  List<String> get ingredients => throw _privateConstructorUsedError;
 
   /// Serializes this RecipeModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -48,6 +52,7 @@ abstract class $RecipeModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
+      String userId,
       String title,
       String image,
       String time,
@@ -55,7 +60,10 @@ abstract class $RecipeModelCopyWith<$Res> {
       double rating,
       String backgroundColor,
       String description,
-      String category});
+      String category,
+      List<Map<String, dynamic>> reviews,
+      List<String> steps,
+      List<String> ingredients});
 }
 
 /// @nodoc
@@ -74,6 +82,7 @@ class _$RecipeModelCopyWithImpl<$Res, $Val extends RecipeModel>
   @override
   $Res call({
     Object? id = null,
+    Object? userId = null,
     Object? title = null,
     Object? image = null,
     Object? time = null,
@@ -82,11 +91,18 @@ class _$RecipeModelCopyWithImpl<$Res, $Val extends RecipeModel>
     Object? backgroundColor = null,
     Object? description = null,
     Object? category = null,
+    Object? reviews = null,
+    Object? steps = null,
+    Object? ingredients = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      userId: null == userId
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
               as String,
       title: null == title
           ? _value.title
@@ -120,6 +136,18 @@ class _$RecipeModelCopyWithImpl<$Res, $Val extends RecipeModel>
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
               as String,
+      reviews: null == reviews
+          ? _value.reviews
+          : reviews // ignore: cast_nullable_to_non_nullable
+              as List<Map<String, dynamic>>,
+      steps: null == steps
+          ? _value.steps
+          : steps // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      ingredients: null == ingredients
+          ? _value.ingredients
+          : ingredients // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ) as $Val);
   }
 }
@@ -134,6 +162,7 @@ abstract class _$$RecipeModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
+      String userId,
       String title,
       String image,
       String time,
@@ -141,7 +170,10 @@ abstract class _$$RecipeModelImplCopyWith<$Res>
       double rating,
       String backgroundColor,
       String description,
-      String category});
+      String category,
+      List<Map<String, dynamic>> reviews,
+      List<String> steps,
+      List<String> ingredients});
 }
 
 /// @nodoc
@@ -158,6 +190,7 @@ class __$$RecipeModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? userId = null,
     Object? title = null,
     Object? image = null,
     Object? time = null,
@@ -166,11 +199,18 @@ class __$$RecipeModelImplCopyWithImpl<$Res>
     Object? backgroundColor = null,
     Object? description = null,
     Object? category = null,
+    Object? reviews = null,
+    Object? steps = null,
+    Object? ingredients = null,
   }) {
     return _then(_$RecipeModelImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      userId: null == userId
+          ? _value.userId
+          : userId // ignore: cast_nullable_to_non_nullable
               as String,
       title: null == title
           ? _value.title
@@ -204,6 +244,18 @@ class __$$RecipeModelImplCopyWithImpl<$Res>
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
               as String,
+      reviews: null == reviews
+          ? _value._reviews
+          : reviews // ignore: cast_nullable_to_non_nullable
+              as List<Map<String, dynamic>>,
+      steps: null == steps
+          ? _value._steps
+          : steps // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      ingredients: null == ingredients
+          ? _value._ingredients
+          : ingredients // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -213,6 +265,7 @@ class __$$RecipeModelImplCopyWithImpl<$Res>
 class _$RecipeModelImpl implements _RecipeModel {
   _$RecipeModelImpl(
       {this.id = "",
+      this.userId = "",
       this.title = "",
       this.image = "",
       this.time = "",
@@ -220,7 +273,13 @@ class _$RecipeModelImpl implements _RecipeModel {
       this.rating = 0.0,
       this.backgroundColor = "",
       this.description = "",
-      this.category = ""});
+      this.category = "",
+      final List<Map<String, dynamic>> reviews = const [],
+      final List<String> steps = const [],
+      final List<String> ingredients = const []})
+      : _reviews = reviews,
+        _steps = steps,
+        _ingredients = ingredients;
 
   factory _$RecipeModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$RecipeModelImplFromJson(json);
@@ -228,6 +287,9 @@ class _$RecipeModelImpl implements _RecipeModel {
   @override
   @JsonKey()
   final String id;
+  @override
+  @JsonKey()
+  final String userId;
   @override
   @JsonKey()
   final String title;
@@ -252,10 +314,36 @@ class _$RecipeModelImpl implements _RecipeModel {
   @override
   @JsonKey()
   final String category;
+  final List<Map<String, dynamic>> _reviews;
+  @override
+  @JsonKey()
+  List<Map<String, dynamic>> get reviews {
+    if (_reviews is EqualUnmodifiableListView) return _reviews;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_reviews);
+  }
+
+  final List<String> _steps;
+  @override
+  @JsonKey()
+  List<String> get steps {
+    if (_steps is EqualUnmodifiableListView) return _steps;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_steps);
+  }
+
+  final List<String> _ingredients;
+  @override
+  @JsonKey()
+  List<String> get ingredients {
+    if (_ingredients is EqualUnmodifiableListView) return _ingredients;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_ingredients);
+  }
 
   @override
   String toString() {
-    return 'RecipeModel(id: $id, title: $title, image: $image, time: $time, calories: $calories, rating: $rating, backgroundColor: $backgroundColor, description: $description, category: $category)';
+    return 'RecipeModel(id: $id, userId: $userId, title: $title, image: $image, time: $time, calories: $calories, rating: $rating, backgroundColor: $backgroundColor, description: $description, category: $category, reviews: $reviews, steps: $steps, ingredients: $ingredients)';
   }
 
   @override
@@ -264,6 +352,7 @@ class _$RecipeModelImpl implements _RecipeModel {
         (other.runtimeType == runtimeType &&
             other is _$RecipeModelImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.image, image) || other.image == image) &&
             (identical(other.time, time) || other.time == time) &&
@@ -275,13 +364,30 @@ class _$RecipeModelImpl implements _RecipeModel {
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.category, category) ||
-                other.category == category));
+                other.category == category) &&
+            const DeepCollectionEquality().equals(other._reviews, _reviews) &&
+            const DeepCollectionEquality().equals(other._steps, _steps) &&
+            const DeepCollectionEquality()
+                .equals(other._ingredients, _ingredients));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, title, image, time, calories,
-      rating, backgroundColor, description, category);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      userId,
+      title,
+      image,
+      time,
+      calories,
+      rating,
+      backgroundColor,
+      description,
+      category,
+      const DeepCollectionEquality().hash(_reviews),
+      const DeepCollectionEquality().hash(_steps),
+      const DeepCollectionEquality().hash(_ingredients));
 
   /// Create a copy of RecipeModel
   /// with the given fields replaced by the non-null parameter values.
@@ -302,6 +408,7 @@ class _$RecipeModelImpl implements _RecipeModel {
 abstract class _RecipeModel implements RecipeModel {
   factory _RecipeModel(
       {final String id,
+      final String userId,
       final String title,
       final String image,
       final String time,
@@ -309,13 +416,18 @@ abstract class _RecipeModel implements RecipeModel {
       final double rating,
       final String backgroundColor,
       final String description,
-      final String category}) = _$RecipeModelImpl;
+      final String category,
+      final List<Map<String, dynamic>> reviews,
+      final List<String> steps,
+      final List<String> ingredients}) = _$RecipeModelImpl;
 
   factory _RecipeModel.fromJson(Map<String, dynamic> json) =
       _$RecipeModelImpl.fromJson;
 
   @override
   String get id;
+  @override
+  String get userId;
   @override
   String get title;
   @override
@@ -332,6 +444,12 @@ abstract class _RecipeModel implements RecipeModel {
   String get description;
   @override
   String get category;
+  @override
+  List<Map<String, dynamic>> get reviews;
+  @override
+  List<String> get steps;
+  @override
+  List<String> get ingredients;
 
   /// Create a copy of RecipeModel
   /// with the given fields replaced by the non-null parameter values.
