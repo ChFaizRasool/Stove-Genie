@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
 
 void showRecipeDialog(BuildContext context, String link) {
   showDialog(
@@ -49,9 +50,8 @@ void showRecipeDialog(BuildContext context, String link) {
                 SizedBox(height: 20),
                 Container(
                   decoration: BoxDecoration(
-                  color: Color(0xffd9d9d9),
-                  borderRadius: BorderRadius.circular(10)
-                  ),
+                      color: Color(0xffd9d9d9),
+                      borderRadius: BorderRadius.circular(10)),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10.0),
                     child: Row(
@@ -69,6 +69,10 @@ void showRecipeDialog(BuildContext context, String link) {
                         ),
                         GestureDetector(
                           onTap: () {
+                            Share.share(
+                              'Check out this amazing recipe on Stove Genie!\nhttps://www.stovegenie.com/recipe',
+                              subject: 'Stove Genie Recipe',
+                            );
                             Clipboard.setData(ClipboardData(text: link));
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(

@@ -30,6 +30,10 @@ _$UserModelImpl _$$UserModelImplFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
+      followers: (json['followers'] as num?)?.toInt() ?? 0,
+      following: (json['following'] as num?)?.toInt() ?? 0,
+      uploadedRecipesCount:
+          (json['uploadedRecipesCount'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$$UserModelImplToJson(_$UserModelImpl instance) =>
@@ -53,4 +57,7 @@ Map<String, dynamic> _$$UserModelImplToJson(_$UserModelImpl instance) =>
       'bio': instance.bio,
       'rating': instance.rating,
       'skills': instance.skills,
+      'followers': instance.followers,
+      'following': instance.following,
+      'uploadedRecipesCount': instance.uploadedRecipesCount,
     };

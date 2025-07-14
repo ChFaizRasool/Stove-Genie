@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:stove_genie/pages/mini_tv/presentation/screen/youtuve_player_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MiniTvScreen extends StatefulWidget {
   const MiniTvScreen({super.key});
@@ -108,7 +110,7 @@ class _MiniTvScreenState extends State<MiniTvScreen>
   List<Map<String, dynamic>> _getMockChannelData() {
     return [
       {
-        'id': 'mock1',
+        'id': 'UCJFp8uSYCjXOMnkUyb3CQ3Q', // Tasty's real channel ID
         'title': 'Tasty',
         'thumbnail': 'https://picsum.photos/200/200?random=1',
         'subscribers': '21.2M',
@@ -117,7 +119,7 @@ class _MiniTvScreenState extends State<MiniTvScreen>
         'description': 'Food videos that make cooking fun and accessible.',
       },
       {
-        'id': 'mock2',
+        'id': 'UCbpMy0Fg74eXXkvxJrtEn3w', // Bon Appétit
         'title': 'Bon Appétit',
         'thumbnail': 'https://picsum.photos/200/200?random=2',
         'subscribers': '6.1M',
@@ -126,7 +128,7 @@ class _MiniTvScreenState extends State<MiniTvScreen>
         'description': 'Cooking videos from the Bon Appétit test kitchen.',
       },
       {
-        'id': 'mock3',
+        'id': 'UCRIZtPl9nb9RiXc9btSTQNw', // Food Network
         'title': 'Food Network',
         'thumbnail': 'https://picsum.photos/200/200?random=3',
         'subscribers': '9.2M',
@@ -136,7 +138,7 @@ class _MiniTvScreenState extends State<MiniTvScreen>
             'Official Food Network channel with recipes and cooking shows.',
       },
       {
-        'id': 'mock4',
+        'id': 'UCJHA_jMfCvEnv-3kRjTCQXw', // Binging with Babish
         'title': 'Binging with Babish',
         'thumbnail': 'https://picsum.photos/200/200?random=4',
         'subscribers': '10.1M',
@@ -145,7 +147,7 @@ class _MiniTvScreenState extends State<MiniTvScreen>
         'description': 'Recreating foods from movies, TV shows, and more.',
       },
       {
-        'id': 'mock5',
+        'id': 'UC8fDlq1wKJWs4zCzY9Dr9QA', // Maangchi
         'title': 'Maangchi',
         'thumbnail': 'https://picsum.photos/200/200?random=5',
         'subscribers': '6.5M',
@@ -651,10 +653,31 @@ class _MiniTvScreenState extends State<MiniTvScreen>
                               ),
                             ],
                           ),
-                          child: const Icon(
-                            Icons.play_arrow,
-                            color: Color(0xFF6C63FF),
-                            size: 30,
+                          child: GestureDetector(
+                            onTap: () {
+                              final videoId = video['videoId'];
+
+                              _launchYoutubeChannel();
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.9),
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.3),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.play_arrow,
+                                color: Color(0xFF6C63FF),
+                                size: 30,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -746,5 +769,16 @@ class _MiniTvScreenState extends State<MiniTvScreen>
         },
       ),
     );
+  }
+
+  Future<void> _launchYoutubeChannel() async {
+    final Uri url = Uri.parse('https://www.youtube.com/channel/dQw4w9WgXcQ');
+
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw Exception('Could not launch $url');
+    }
   }
 }

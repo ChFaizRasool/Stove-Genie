@@ -1,84 +1,120 @@
 import 'dart:convert';
+import 'dart:developer';
 
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:stove_genie/models/recipe/recipe_model.dart';
 
 class RecipeDbHelper {
+  RecipeDbHelper._internal();
   static final RecipeDbHelper _instance = RecipeDbHelper._internal();
   factory RecipeDbHelper() => _instance;
-  RecipeDbHelper._internal();
+
+  static const _dbName = 'recipes.db';
+  static const _dbVersion = 1;
 
   Database? _db;
 
   Future<Database> get database async {
     if (_db != null) return _db!;
-
     _db = await _initDB();
     return _db!;
   }
 
+  Future<void> close() async {
+    if (_db != null) {
+      await _db!.close();
+      _db = null;
+    }
+  }
+
   Future<Database> _initDB() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'recipes.db');
+    final path = join(dbPath, _dbName);
 
-    return await openDatabase(
+    return openDatabase(
       path,
-      version: 1,
-      onCreate: (db, version) {
-        return db.execute('''
-          CREATE TABLE recipes(
-            id TEXT PRIMARY KEY,
-            title TEXT,
-            image TEXT,
-            time TEXT,
-            calories TEXT,
-            rating REAL,
-            backgroundColor TEXT,
-            description TEXT,
-            category TEXT,
-            steps TEXT,
-            ingredients TEXT
-            reviews TEXT
-
-          )
-        ''');
-      },
+      version: _dbVersion,
+      onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
+      onDowngrade: onDatabaseDowngradeDelete,
     );
   }
 
-  Future<void> insertRecipe(RecipeModel recipe) async {
+  Future<void> _onCreate(Database db, int version) async {
+    await db.execute('''
+      CREATE TABLE recipes(
+        id TEXT PRIMARY KEY,
+        userId TEXT,
+        title TEXT,
+        image TEXT,
+        time INTEGER,
+        calories INTEGER,
+        rating REAL,
+        backgroundColor TEXT,
+        description TEXT,
+        category TEXT,
+        reviews TEXT,
+        steps TEXT,
+        ingredients TEXT
+      );
+    ''');
+
+    await db.execute('CREATE INDEX idx_userId ON recipes(userId);');
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion == 1 && newVersion == 2) {
+      // e.g. await db.execute('ALTER TABLE recipes ADD COLUMN isPublic INTEGER DEFAULT 0');
+    }
+  }
+
+  /* ------------ CRUD wrappers ------------ */
+  Future<int> insertRecipe(RecipeModel recipe) async {
+    try {
+      final db = await database;
+      final data = recipe.toJson()
+        ..['reviews'] = jsonEncode(recipe.reviews)
+        ..['steps'] = jsonEncode(recipe.steps)
+        ..['ingredients'] = jsonEncode(recipe.ingredients);
+
+      return db.insert(
+        'recipes',
+        data,
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } catch (e, s) {
+      log('insertRecipe failed', error: e, stackTrace: s);
+      rethrow;
+    }
+  }
+
+  Future<void> batchInsert(List<RecipeModel> list) async {
     final db = await database;
-    final data = recipe.toJson();
-
-    // Serialize lists to JSON strings
-    data['steps'] = jsonEncode(recipe.steps);
-    data['ingredients'] = jsonEncode(recipe.ingredients);
-
-    await db.insert(
-      'recipes',
-      data,
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    final batch = db.batch();
+    for (final r in list) {
+      batch.insert(
+        'recipes',
+        r.toJson()
+          ..['reviews'] = jsonEncode(r.reviews)
+          ..['steps'] = jsonEncode(r.steps)
+          ..['ingredients'] = jsonEncode(r.ingredients),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    await batch.commit(noResult: true);
   }
 
   Future<List<RecipeModel>> getRecipes() async {
     final db = await database;
-    final maps = await db.query('recipes');
+    final rows = await db.query('recipes');
 
-    return maps.map((map) {
-      final stepsJson = map['steps'];
-      final ingredientsJson = map['ingredients'];
-
-      if (stepsJson is String) {
-        map['steps'] = jsonDecode(stepsJson);
-      }
-
-      if (ingredientsJson is String) {
-        map['ingredients'] = jsonDecode(ingredientsJson);
-      }
-
-      return RecipeModel.fromJson(map);
+    return rows.map((row) {
+      final m = Map<String, dynamic>.from(row)
+        ..update('steps', (v) => jsonDecode(v as String))
+        ..update('ingredients', (v) => jsonDecode(v as String))
+        ..update('reviews', (v) => jsonDecode(v as String));
+      return RecipeModel.fromJson(m);
     }).toList();
   }
 
@@ -89,7 +125,10 @@ class RecipeDbHelper {
 
   Future<bool> isRecipeSaved(String id) async {
     final db = await database;
-    final result = await db.query('recipes', where: 'id = ?', whereArgs: [id]);
-    return result.isNotEmpty;
+    final res = await db.rawQuery(
+      'SELECT 1 FROM recipes WHERE id = ? LIMIT 1',
+      [id],
+    );
+    return res.isNotEmpty;
   }
 }

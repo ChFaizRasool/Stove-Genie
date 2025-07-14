@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:stove_genie/bloc/cubit/recipe_cubit.dart';
-import 'package:stove_genie/core/di_container.dart';
+import 'package:stove_genie/localdb/recipe_db.dart';
+import 'package:stove_genie/models/recipe/recipe_model.dart';
 import 'package:stove_genie/pages/recipe_details/presentation/widget/ingredients.dart';
 import 'package:stove_genie/pages/recipe_details/presentation/widget/procedure.dart';
 import 'package:stove_genie/pages/recipe_details/presentation/widget/rate_recipe.dart';
@@ -13,13 +12,35 @@ import 'package:stove_genie/pages/recipe_details/presentation/widget/user_accoun
 import 'package:stove_genie/pages/reviews_screen/presentation/screen/reviews_screen.dart';
 import 'package:stove_genie/pages/saved_recipes/presentation/widget/recipe_container.dart';
 
-class RecipeDetails extends StatelessWidget {
-  const RecipeDetails({super.key});
+class RecipeDetails extends StatefulWidget {
+  final RecipeModel? recipe;
+
+  const RecipeDetails({super.key, this.recipe});
+
+  @override
+  State<RecipeDetails> createState() => _RecipeDetailsState();
+}
+
+class _RecipeDetailsState extends State<RecipeDetails> {
+  bool isSaved = true;
+
+  Future<void> _unsaveRecipe() async {
+    await RecipeDbHelper().deleteRecipe(widget.recipe?.id ?? '');
+    setState(() {
+      isSaved = false;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Recipe removed from saved')),
+    );
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (recipe == null) {
-      return Center(child: Text("No recipe selected"));
+    if (widget.recipe == null) {
+      return const Scaffold(
+        body: Center(child: Text("No recipe selected")),
+      );
     }
 
     return DefaultTabController(
@@ -46,14 +67,14 @@ class RecipeDetails extends StatelessWidget {
               onSelected: (value) {
                 switch (value) {
                   case 0:
-                    showRecipeDialog(context, 'https://www.example.com/recipe');
+                    showRecipeDialog(
+                        context, 'https://www.stovegenie.com/recipe');
                     break;
                   case 1:
                     showRateRecipeDialog(context, onSubmit: (rating) {
                       final userId = FirebaseAuth.instance.currentUser?.uid;
-                      final recipeId = recipe?.id;
-
-                      if (userId != null && (recipeId?.isNotEmpty ?? false)) {
+                      final recipeId = widget.recipe?.id;
+                      if (userId != null && recipeId?.isNotEmpty == true) {
                         FirebaseFirestore.instance
                             .collection('recipes')
                             .doc(recipeId)
@@ -66,21 +87,18 @@ class RecipeDetails extends StatelessWidget {
                             }
                           ])
                         });
-                      } else {
-                        debugPrint("User ID or Recipe ID is null or empty");
                       }
                     });
-
                     break;
                   case 2:
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ReviewsScreen(),
-                      ),
+                          builder: (context) => const ReviewsScreen()),
                     );
                     break;
                   case 3:
+                    _unsaveRecipe();
                     break;
                 }
               },
@@ -98,9 +116,13 @@ class RecipeDetails extends StatelessWidget {
             Column(
               children: [
                 RecipeContainer(
-                  imgPath: recipe?.image,
-                  rating: recipe?.rating.toString(),
-                  time: recipe?.time,
+                  imgPath: widget.recipe!.image.isNotEmpty
+                      ? widget.recipe!.image
+                      : '',
+                  rating: widget.recipe!.rating.toString(),
+                  time: widget.recipe!.time.isNotEmpty
+                      ? widget.recipe!.time
+                      : '0 min',
                   showButton: true,
                 ),
                 const SizedBox(height: 10),
@@ -111,7 +133,9 @@ class RecipeDetails extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          recipe?.title ?? '',
+                          widget.recipe!.title.isNotEmpty
+                              ? widget.recipe!.title
+                              : '-',
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
@@ -120,13 +144,26 @@ class RecipeDetails extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      Text(
-                        "(13k Reviews)",
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
-                          color: const Color(0xffa3a3a3),
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            (widget.recipe!.reviews?.length ?? 0).toString(),
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                              color: const Color(0xffa3a3a3),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Reviews',
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                              color: const Color(0xffa3a3a3),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -134,7 +171,7 @@ class RecipeDetails extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            UserAccountWidget(userId: recipe?.userId ?? ''),
+            UserAccountWidget(userId: widget.recipe!.userId),
             const SizedBox(height: 20),
             TabBar(
               physics: const NeverScrollableScrollPhysics(),
@@ -156,9 +193,9 @@ class RecipeDetails extends StatelessWidget {
               child: TabBarView(
                 children: [
                   Ingredients(
-                    ingredients: recipe?.ingredients ?? [],
+                    ingredients: widget.recipe!.ingredients ?? [],
                   ),
-                  Procedure(steps: recipe?.steps ?? []),
+                  Procedure(steps: widget.recipe!.steps ?? []),
                 ],
               ),
             ),
@@ -181,5 +218,3 @@ class RecipeDetails extends StatelessWidget {
     );
   }
 }
-
-final recipe = Di().sl<RecipeCubit>().singleRecipeData;

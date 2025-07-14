@@ -39,6 +39,9 @@ mixin _$UserModel {
   String get bio => throw _privateConstructorUsedError;
   double get rating => throw _privateConstructorUsedError;
   List<String> get skills => throw _privateConstructorUsedError;
+  int? get followers => throw _privateConstructorUsedError;
+  int? get following => throw _privateConstructorUsedError;
+  int? get uploadedRecipesCount => throw _privateConstructorUsedError;
 
   /// Serializes this UserModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -74,7 +77,10 @@ abstract class $UserModelCopyWith<$Res> {
       int orderCompleted,
       String bio,
       double rating,
-      List<String> skills});
+      List<String> skills,
+      int? followers,
+      int? following,
+      int? uploadedRecipesCount});
 }
 
 /// @nodoc
@@ -111,6 +117,9 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? bio = null,
     Object? rating = null,
     Object? skills = null,
+    Object? followers = freezed,
+    Object? following = freezed,
+    Object? uploadedRecipesCount = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -189,6 +198,18 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.skills
           : skills // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      followers: freezed == followers
+          ? _value.followers
+          : followers // ignore: cast_nullable_to_non_nullable
+              as int?,
+      following: freezed == following
+          ? _value.following
+          : following // ignore: cast_nullable_to_non_nullable
+              as int?,
+      uploadedRecipesCount: freezed == uploadedRecipesCount
+          ? _value.uploadedRecipesCount
+          : uploadedRecipesCount // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 }
@@ -220,7 +241,10 @@ abstract class _$$UserModelImplCopyWith<$Res>
       int orderCompleted,
       String bio,
       double rating,
-      List<String> skills});
+      List<String> skills,
+      int? followers,
+      int? following,
+      int? uploadedRecipesCount});
 }
 
 /// @nodoc
@@ -255,6 +279,9 @@ class __$$UserModelImplCopyWithImpl<$Res>
     Object? bio = null,
     Object? rating = null,
     Object? skills = null,
+    Object? followers = freezed,
+    Object? following = freezed,
+    Object? uploadedRecipesCount = freezed,
   }) {
     return _then(_$UserModelImpl(
       id: null == id
@@ -333,6 +360,18 @@ class __$$UserModelImplCopyWithImpl<$Res>
           ? _value._skills
           : skills // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      followers: freezed == followers
+          ? _value.followers
+          : followers // ignore: cast_nullable_to_non_nullable
+              as int?,
+      following: freezed == following
+          ? _value.following
+          : following // ignore: cast_nullable_to_non_nullable
+              as int?,
+      uploadedRecipesCount: freezed == uploadedRecipesCount
+          ? _value.uploadedRecipesCount
+          : uploadedRecipesCount // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -359,7 +398,10 @@ class _$UserModelImpl implements _UserModel {
       this.orderCompleted = 0,
       this.bio = "",
       this.rating = 0.0,
-      final List<String> skills = const []})
+      final List<String> skills = const [],
+      this.followers = 0,
+      this.following = 0,
+      this.uploadedRecipesCount = 0})
       : _skills = skills;
 
   factory _$UserModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -429,8 +471,18 @@ class _$UserModelImpl implements _UserModel {
   }
 
   @override
+  @JsonKey()
+  final int? followers;
+  @override
+  @JsonKey()
+  final int? following;
+  @override
+  @JsonKey()
+  final int? uploadedRecipesCount;
+
+  @override
   String toString() {
-    return 'UserModel(id: $id, name: $name, email: $email, number: $number, city: $city, licenseId: $licenseId, service: $service, image: $image, notifications: $notifications, pushToken: $pushToken, state: $state, online: $online, createdAt: $createdAt, price: $price, experience: $experience, orderCompleted: $orderCompleted, bio: $bio, rating: $rating, skills: $skills)';
+    return 'UserModel(id: $id, name: $name, email: $email, number: $number, city: $city, licenseId: $licenseId, service: $service, image: $image, notifications: $notifications, pushToken: $pushToken, state: $state, online: $online, createdAt: $createdAt, price: $price, experience: $experience, orderCompleted: $orderCompleted, bio: $bio, rating: $rating, skills: $skills, followers: $followers, following: $following, uploadedRecipesCount: $uploadedRecipesCount)';
   }
 
   @override
@@ -462,7 +514,13 @@ class _$UserModelImpl implements _UserModel {
                 other.orderCompleted == orderCompleted) &&
             (identical(other.bio, bio) || other.bio == bio) &&
             (identical(other.rating, rating) || other.rating == rating) &&
-            const DeepCollectionEquality().equals(other._skills, _skills));
+            const DeepCollectionEquality().equals(other._skills, _skills) &&
+            (identical(other.followers, followers) ||
+                other.followers == followers) &&
+            (identical(other.following, following) ||
+                other.following == following) &&
+            (identical(other.uploadedRecipesCount, uploadedRecipesCount) ||
+                other.uploadedRecipesCount == uploadedRecipesCount));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -487,7 +545,10 @@ class _$UserModelImpl implements _UserModel {
         orderCompleted,
         bio,
         rating,
-        const DeepCollectionEquality().hash(_skills)
+        const DeepCollectionEquality().hash(_skills),
+        followers,
+        following,
+        uploadedRecipesCount
       ]);
 
   /// Create a copy of UserModel
@@ -526,7 +587,10 @@ abstract class _UserModel implements UserModel {
       final int orderCompleted,
       final String bio,
       final double rating,
-      final List<String> skills}) = _$UserModelImpl;
+      final List<String> skills,
+      final int? followers,
+      final int? following,
+      final int? uploadedRecipesCount}) = _$UserModelImpl;
 
   factory _UserModel.fromJson(Map<String, dynamic> json) =
       _$UserModelImpl.fromJson;
@@ -569,6 +633,12 @@ abstract class _UserModel implements UserModel {
   double get rating;
   @override
   List<String> get skills;
+  @override
+  int? get followers;
+  @override
+  int? get following;
+  @override
+  int? get uploadedRecipesCount;
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.

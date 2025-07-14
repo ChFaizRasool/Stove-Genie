@@ -1,58 +1,103 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stove_genie/utils/helper.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-class UserAccountWidget extends StatelessWidget {
+class UserAccountWidget extends StatefulWidget {
   final String userId;
 
   const UserAccountWidget({super.key, required this.userId});
 
-  Future<Map<String, dynamic>?> getUserDetails() async {
-    final querySnapshot = await FirebaseFirestore.instance
+  @override
+  State<UserAccountWidget> createState() => _UserAccountWidgetState();
+}
+
+class _UserAccountWidgetState extends State<UserAccountWidget> {
+  bool isFollowing = false;
+  Map<String, dynamic>? userData;
+
+  String get currentUserId => FirebaseAuth.instance.currentUser!.uid;
+
+  Future<void> getUserDetails() async {
+    final userDoc = await FirebaseFirestore.instance
         .collection('users')
-        .where('id', isEqualTo: userId)
+        .doc(widget.userId)
         .get();
 
-    if (querySnapshot.docs.isNotEmpty) {
-      return querySnapshot.docs.first.data();
+    final currentUserDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .get();
+
+    final followers = List<String>.from(userDoc.data()?['followers'] ?? []);
+    final following =
+        List<String>.from(currentUserDoc.data()?['following'] ?? []);
+
+    setState(() {
+      isFollowing = followers.contains(currentUserId);
+      userData = userDoc.data();
+    });
+  }
+
+  Future<void> toggleFollow() async {
+    final userRef =
+        FirebaseFirestore.instance.collection('users').doc(widget.userId);
+    final currentUserRef =
+        FirebaseFirestore.instance.collection('users').doc(currentUserId);
+
+    if (isFollowing) {
+      await userRef.update({
+        'followers': FieldValue.arrayRemove([currentUserId])
+      });
+      await currentUserRef.update({
+        'following': FieldValue.arrayRemove([widget.userId])
+      });
+    } else {
+      await userRef.update({
+        'followers': FieldValue.arrayUnion([currentUserId])
+      });
+      await currentUserRef.update({
+        'following': FieldValue.arrayUnion([widget.userId])
+      });
     }
-    return null;
+
+    setState(() {
+      isFollowing = !isFollowing;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserDetails();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>?>(
-      future: getUserDetails(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Padding(
-            padding: EdgeInsets.all(16),
-            child: CircularProgressIndicator(),
-          );
-        }
+    if (userData == null) {
+      return const Padding(
+        padding: EdgeInsets.all(16),
+        child: CircularProgressIndicator(),
+      );
+    }
 
-        if (!snapshot.hasData || snapshot.data == null) {
-          return const Padding(
-            padding: EdgeInsets.all(16),
-            child: Text("User not found"),
-          );
-        }
+    final isMe = widget.userId == currentUserId;
 
-        final user = snapshot.data!;
-        return userAccount(
-          context,
-          user['photoUrl'] ?? '',
-          user['name'] ?? '',
-          user['location'] ?? 'Unknown',
-        );
-      },
+    return userAccount(
+      context,
+      userData?['image'] ?? '',
+      userData?['name'] ?? '',
+      userData?['city'] ?? 'Unknown',
+      isFollowing,
+      toggleFollow,
+      isMe,
     );
   }
 }
 
-Widget userAccount(
-    BuildContext context, String imgPath, String name, String loc) {
+Widget userAccount(BuildContext context, String imgPath, String name,
+    String loc, bool isFollowing, VoidCallback onFollowTap, bool isMe) {
   return SizedBox(
     width: getWidth(context) * 0.9,
     child: Row(
@@ -86,20 +131,25 @@ Widget userAccount(
           ],
         ),
         const Spacer(),
-        Container(
-          width: 85,
-          height: 37,
-          decoration: BoxDecoration(
-              color: const Color(0xffFFA307),
-              borderRadius: BorderRadius.circular(10)),
-          child: Center(
-            child: Text('Follow',
-                style: GoogleFonts.poppins(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white)),
-          ),
-        )
+        if (!isMe)
+          GestureDetector(
+            onTap: onFollowTap,
+            child: Container(
+              width: 85,
+              height: 37,
+              decoration: BoxDecoration(
+                color: isFollowing ? Colors.grey[300] : const Color(0xffFFA307),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Text(isFollowing ? 'Unfollow' : 'Follow',
+                    style: GoogleFonts.poppins(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: isFollowing ? Colors.black : Colors.white)),
+              ),
+            ),
+          )
       ],
     ),
   );

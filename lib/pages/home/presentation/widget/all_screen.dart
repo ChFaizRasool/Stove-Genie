@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -20,74 +22,6 @@ class AllScreen extends StatefulWidget {
 
 class _AllScreenState extends State<AllScreen> {
   final cubit = Di().sl<RecipeCubit>();
-  final Set<String> savedRecipeIds = {}; // Track saved recipes
-  bool isLoadingSaved = false;
-
-  Future<void> _loadSavedRecipes() async {
-    try {
-      setState(() {
-        isLoadingSaved = true;
-      });
-
-      final recipes = await RecipeDbHelper().getRecipes();
-      if (mounted) {
-        setState(() {
-          savedRecipeIds.clear();
-          savedRecipeIds.addAll(recipes.map((e) => e.id));
-          isLoadingSaved = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          isLoadingSaved = false;
-        });
-        _showErrorSnackBar('Error loading saved recipes: ${e.toString()}');
-      }
-    }
-  }
-
-  Future<void> _toggleSave(RecipeModel recipe, int index) async {
-    try {
-      final isSaved = savedRecipeIds.contains(recipe.id);
-
-      if (isSaved) {
-        await RecipeDbHelper().deleteRecipe(recipe.id);
-        if (mounted) {
-          setState(() {
-            savedRecipeIds.remove(recipe.id);
-          });
-          _showSuccessSnackBar(
-              '${recipe.title} removed from favorites', Colors.orange);
-        }
-      } else {
-        await RecipeDbHelper().insertRecipe(recipe);
-        if (mounted) {
-          setState(() {
-            savedRecipeIds.add(recipe.id);
-          });
-          _showSuccessSnackBar(
-              '${recipe.title} saved to favorites', Colors.green);
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        _showErrorSnackBar('Error saving recipe: ${e.toString()}');
-      }
-    }
-  }
-
-  void _showSuccessSnackBar(String message, Color color) {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: color,
-          duration: const Duration(seconds: 2),
-        ),
-      );
-    }
-  }
 
   void _showErrorSnackBar(String message) {
     if (mounted) {
@@ -104,11 +38,9 @@ class _AllScreenState extends State<AllScreen> {
   Future<void> fetchRecipe() async {
     try {
       await cubit.fetchRecipe();
-      await _loadSavedRecipes();
+      setState(() {});
     } catch (e) {
-      if (mounted) {
-        _showErrorSnackBar('Error fetching recipes: ${e.toString()}');
-      }
+      _showErrorSnackBar('Error fetching recipes: ${e.toString()}');
     }
   }
 
@@ -124,135 +56,105 @@ class _AllScreenState extends State<AllScreen> {
       bloc: cubit,
       builder: (context, state) {
         if (state is RecipeLoading) {
-          return const Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 16),
-                Text('Loading recipes...'),
-              ],
-            ),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (state is RecipeError) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 64,
-                  color: Colors.red,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Error loading recipes',
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Please try again',
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: fetchRecipe,
-                  child: Text('Retry'),
-                ),
-              ],
-            ),
-          );
+          return Center(child: Text('Failed to load recipes.'));
         }
 
         if (state is RecipeLoaded) {
-          final recipes = cubit.recipeData;
+          final recipes = cubit.recipeData.reversed.toList();
 
           if (recipes.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.restaurant_menu,
-                    size: 64,
-                    color: Colors.grey[400],
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No recipes found',
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Try refreshing or check your connection',
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: fetchRecipe,
-                    child: Text('Refresh'),
-                  ),
-                ],
-              ),
-            );
+            return Center(child: Text('No recipes found.'));
           }
 
           return SizedBox(
-            height: 250,
-            child: ListView.builder(
-              itemCount: recipes.length,
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                final recipe = recipes[index];
-                final isSaved = savedRecipeIds.contains(recipe.id);
-                return GestureDetector(
-                  onTap: () {
-                    cubit.singleRecipeData = recipe;
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => BlocProvider.value(
-                          value: cubit,
-                          child: RecipeDetails(),
-                        ),
-                      ),
-                    );
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(left: index == 0 ? 30 : 15),
-                    child: _buildRecipeCard(
-                        recipe, isSaved, () => _toggleSave(recipe, index)),
-                  ),
-                );
-              },
-            ),
-          );
+              height: 250,
+              child: StatefulBuilder(
+                builder: (context, setState) {
+                  return ListView.builder(
+                    itemCount: recipes.length,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      final recipe = recipes[index];
+                      return FutureBuilder<bool>(
+                        future: RecipeDbHelper().isRecipeSaved(recipe.id),
+                        builder: (context, snapshot) {
+                          final isSaved = snapshot.data ?? false;
+                          return Padding(
+                            padding:
+                                EdgeInsets.only(left: index == 0 ? 30 : 15),
+                            child: RecepieWidget(
+                              recipe: recipe,
+                              isFavorite: isSaved,
+                              onFavoriteToggled: () =>
+                                  setState(() {}), // rebuild list
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ));
         }
 
         return Container();
       },
     );
   }
+}
 
-  Widget _buildRecipeCard(
-      RecipeModel recipe, bool isSaved, VoidCallback onToggle) {
-    final isSaved = savedRecipeIds.contains(recipe.id);
+class RecepieWidget extends StatefulWidget {
+  final RecipeModel recipe;
+  final bool isFavorite;
+  final VoidCallback onFavoriteToggled;
+  const RecepieWidget(
+      {super.key,
+      required this.recipe,
+      required this.isFavorite,
+      required this.onFavoriteToggled});
 
+  @override
+  State<RecepieWidget> createState() => _RecepieWidgetState();
+}
+
+class _RecepieWidgetState extends State<RecepieWidget> {
+  void _showSuccessSnackBar(String message, Color color) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: color,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  late bool isFav;
+
+  @override
+  void initState() {
+    super.initState();
+    isFav = widget.isFavorite;
+  }
+
+  Future<void> _toggleFavorite() async {
+    if (isFav) {
+      await RecipeDbHelper().deleteRecipe(widget.recipe.id);
+    } else {
+      await RecipeDbHelper().insertRecipe(widget.recipe);
+    }
+    setState(() => isFav = !isFav);
+    widget.onFavoriteToggled();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Stack(children: [
       Column(
         children: [
@@ -273,7 +175,7 @@ class _AllScreenState extends State<AllScreen> {
                   child: Center(
                     child: Text(
                       textAlign: TextAlign.center,
-                      recipe.title,
+                      widget.recipe.title,
                       style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -290,7 +192,7 @@ class _AllScreenState extends State<AllScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          recipe.category,
+                          widget.recipe.category,
                           style: GoogleFonts.poppins(
                               color: AppColors.cheifColor,
                               fontSize: 11,
@@ -302,7 +204,7 @@ class _AllScreenState extends State<AllScreen> {
                       SvgPicture.asset(AppImages.flameIcon),
                       const SizedBox(width: 2),
                       Text(
-                        '${recipe.calories} KCal',
+                        '${widget.recipe.calories} KCal',
                         style: GoogleFonts.poppins(
                             color: AppColors.falmetextColor,
                             fontSize: 10,
@@ -317,7 +219,7 @@ class _AllScreenState extends State<AllScreen> {
                   child: Row(
                     children: [
                       Text(
-                        '${recipe.time} Mins',
+                        '${widget.recipe.time} Mins',
                         style: GoogleFonts.poppins(
                             color: AppColors.resipetextColor,
                             fontSize: 11,
@@ -325,17 +227,12 @@ class _AllScreenState extends State<AllScreen> {
                       ),
                       const Spacer(),
                       GestureDetector(
-                        onTap: isLoadingSaved ? null : onToggle,
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          child: SvgPicture.asset(
-                            AppImages.saveselected,
-                            height: 20,
-                            colorFilter: ColorFilter.mode(
-                              isSaved ? Colors.red : Colors.grey[400]!,
-                              BlendMode.srcIn,
-                            ),
-                          ),
+                        onTap: _toggleFavorite,
+                        child: SvgPicture.asset(
+                          isFav
+                              ? AppImages.saveselected
+                              : AppImages.saveUnSelected,
+                          height: 20,
                         ),
                       ),
                     ],
@@ -357,9 +254,9 @@ class _AllScreenState extends State<AllScreen> {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(40),
-            child: recipe.image.isNotEmpty
+            child: widget.recipe.image.isNotEmpty
                 ? Image.network(
-                    recipe.image,
+                    widget.recipe.image,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
@@ -413,7 +310,7 @@ class _AllScreenState extends State<AllScreen> {
               SvgPicture.asset('assets/icons/rate_star.svg'),
               const SizedBox(width: 5),
               Text(
-                recipe.rating.toStringAsFixed(1),
+                widget.recipe.rating.toStringAsFixed(1),
                 style: GoogleFonts.poppins(
                     fontSize: 11,
                     fontWeight: FontWeight.w400,

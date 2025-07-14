@@ -25,6 +25,9 @@ class UserModel with _$UserModel {
     @Default("") String bio,
     @Default(0.0) double rating,
     @Default([]) List<String> skills,
+    @Default(0) int? followers,
+    @Default(0) int? following,
+    @Default(0) int? uploadedRecipesCount,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
