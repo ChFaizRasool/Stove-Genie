@@ -111,9 +111,23 @@ class RecipeDbHelper {
 
     return rows.map((row) {
       final m = Map<String, dynamic>.from(row)
-        ..update('steps', (v) => jsonDecode(v as String))
-        ..update('ingredients', (v) => jsonDecode(v as String))
-        ..update('reviews', (v) => jsonDecode(v as String));
+        ..update(
+          'steps',
+          (v) => (jsonDecode(v as String) as List<dynamic>).cast<String>(),
+        )
+        ..update(
+          'ingredients',
+          (v) => (jsonDecode(v as String) as List<dynamic>).cast<String>(),
+        )
+        ..update(
+          'reviews',
+          (v) => (jsonDecode(v as String) as List<dynamic>)
+              .cast<Map<String, dynamic>>(),
+        )
+        // convert the ints to Strings, so recipe_model.fromJson sees a String
+        ..update('time', (v) => v?.toString() ?? '')
+        ..update('calories', (v) => v?.toString() ?? '');
+
       return RecipeModel.fromJson(m);
     }).toList();
   }

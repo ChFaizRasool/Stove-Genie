@@ -1,9 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer/shimmer.dart';
+
 import 'package:stove_genie/bloc/cubit/recipe_cubit.dart';
 import 'package:stove_genie/bloc/state/recipe_state.dart';
 import 'package:stove_genie/core/di_container.dart';
@@ -23,87 +23,155 @@ class AllScreen extends StatefulWidget {
 class _AllScreenState extends State<AllScreen> {
   final cubit = Di().sl<RecipeCubit>();
 
-  void _showErrorSnackBar(String message) {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 3),
-        ),
-      );
-    }
-  }
-
-  Future<void> fetchRecipe() async {
-    try {
-      await cubit.fetchRecipe();
-      setState(() {});
-    } catch (e) {
-      _showErrorSnackBar('Error fetching recipes: ${e.toString()}');
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    fetchRecipe();
+    cubit.fetchRecipe().catchError((e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching recipes: $e')),
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
+    return BlocBuilder<RecipeCubit, RecipeState>(
       bloc: cubit,
       builder: (context, state) {
+        // 1) Show shimmer skeleton while loading
         if (state is RecipeLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return SizedBox(
+            height: 250,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.only(left: 30),
+              itemCount: 4,
+              itemBuilder: (_, index) => Padding(
+                padding: EdgeInsets.only(left: index == 0 ? 0 : 15),
+                child: const SkeletonRecipeCard(),
+              ),
+            ),
+          );
         }
 
+        // 2) Error state
         if (state is RecipeError) {
-          return Center(child: Text('Failed to load recipes.'));
+          return Center(
+              child: Text('Failed to load recipes.', style: _errorStyle));
         }
 
+        // 3) Loaded state
         if (state is RecipeLoaded) {
           final recipes = cubit.recipeData.reversed.toList();
-
           if (recipes.isEmpty) {
-            return Center(child: Text('No recipes found.'));
+            return Center(child: Text('No recipes found.', style: _errorStyle));
           }
-
           return SizedBox(
-              height: 250,
-              child: StatefulBuilder(
-                builder: (context, setState) {
-                  return ListView.builder(
-                    itemCount: recipes.length,
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      final recipe = recipes[index];
-                      return FutureBuilder<bool>(
-                        future: RecipeDbHelper().isRecipeSaved(recipe.id),
-                        builder: (context, snapshot) {
-                          final isSaved = snapshot.data ?? false;
-                          return Padding(
-                            padding:
-                                EdgeInsets.only(left: index == 0 ? 30 : 15),
+            height: 250,
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.only(left: 30),
+                  itemCount: recipes.length,
+                  itemBuilder: (context, index) {
+                    final r = recipes[index];
+                    return Padding(
+                      padding: EdgeInsets.only(left: index == 0 ? 0 : 15),
+                      child: FutureBuilder<bool>(
+                        future: RecipeDbHelper().isRecipeSaved(r.id),
+                        builder: (context, snap) {
+                          final isSaved = snap.data ?? false;
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RecipeDetails(
+                                      recipe: r,
+                                    ),
+                                  ));
+                            },
                             child: RecepieWidget(
-                              recipe: recipe,
+                              recipe: r,
                               isFavorite: isSaved,
-                              onFavoriteToggled: () =>
-                                  setState(() {}), // rebuild list
+                              onFavoriteToggled: () => setState(() {}),
                             ),
                           );
                         },
-                      );
-                    },
-                  );
-                },
-              ));
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          );
         }
 
-        return Container();
+        // fallback
+        return const SizedBox.shrink();
       },
+    );
+  }
+}
+
+// A simple shimmer placeholder for your recipe card
+class SkeletonRecipeCard extends StatelessWidget {
+  const SkeletonRecipeCard({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
+      child: Column(
+        children: [
+          const SizedBox(height: 40),
+          Container(
+            height: 160,
+            width: 150,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            child: Column(
+              children: [
+                const SizedBox(height: 40),
+                // title placeholder
+                Container(
+                  height: 14,
+                  width: 100,
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 10),
+                // category placeholder
+                Container(
+                  height: 12,
+                  width: 60,
+                  color: Colors.white,
+                ),
+                const Spacer(),
+                // time + favorite icon placeholder
+                Row(
+                  children: [
+                    Container(
+                      height: 12,
+                      width: 40,
+                      color: Colors.white,
+                    ),
+                    const Spacer(),
+                    Container(
+                      height: 20,
+                      width: 20,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -112,29 +180,19 @@ class RecepieWidget extends StatefulWidget {
   final RecipeModel recipe;
   final bool isFavorite;
   final VoidCallback onFavoriteToggled;
-  const RecepieWidget(
-      {super.key,
-      required this.recipe,
-      required this.isFavorite,
-      required this.onFavoriteToggled});
+
+  const RecepieWidget({
+    super.key,
+    required this.recipe,
+    required this.isFavorite,
+    required this.onFavoriteToggled,
+  });
 
   @override
   State<RecepieWidget> createState() => _RecepieWidgetState();
 }
 
 class _RecepieWidgetState extends State<RecepieWidget> {
-  void _showSuccessSnackBar(String message, Color color) {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: color,
-          duration: const Duration(seconds: 2),
-        ),
-      );
-    }
-  }
-
   late bool isFav;
 
   @override
@@ -151,175 +209,157 @@ class _RecepieWidgetState extends State<RecepieWidget> {
     }
     setState(() => isFav = !isFav);
     widget.onFavoriteToggled();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(isFav ? 'Saved!' : 'Removed!'),
+        backgroundColor: isFav ? Colors.green : Colors.orange,
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Column(
-        children: [
-          const SizedBox(height: 40),
-          Container(
-            height: 160,
-            width: 150,
-            decoration: BoxDecoration(
-              color: AppColors.containeColor.withOpacity(0.5),
-              borderRadius: const BorderRadius.all(Radius.circular(12)),
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: 5),
-                const SizedBox(height: 50),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Center(
+    return Stack(
+      children: [
+        Column(
+          children: [
+            const SizedBox(height: 40),
+            Container(
+              height: 160,
+              width: 150,
+              decoration: BoxDecoration(
+                color: AppColors.containeColor.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 55),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
-                      textAlign: TextAlign.center,
                       widget.recipe.title,
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.resipetextColor),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.resipetextColor,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          widget.recipe.category,
-                          style: GoogleFonts.poppins(
+                  const Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            widget.recipe.category,
+                            style: GoogleFonts.poppins(
                               color: AppColors.cheifColor,
                               fontSize: 11,
-                              fontWeight: FontWeight.w400),
-                          overflow: TextOverflow.ellipsis,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 5),
-                      SvgPicture.asset(AppImages.flameIcon),
-                      const SizedBox(width: 2),
-                      Text(
-                        '${widget.recipe.calories} KCal',
-                        style: GoogleFonts.poppins(
+                        const SizedBox(width: 5),
+                        SvgPicture.asset(AppImages.flameIcon),
+                        const SizedBox(width: 2),
+                        Text(
+                          '${widget.recipe.calories} KCal',
+                          style: GoogleFonts.poppins(
                             color: AppColors.falmetextColor,
                             fontSize: 10,
-                            fontWeight: FontWeight.w400),
-                      ),
-                    ],
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    children: [
-                      Text(
-                        '${widget.recipe.time} Mins',
-                        style: GoogleFonts.poppins(
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      children: [
+                        Text(
+                          widget.recipe.time ?? '',
+                          style: GoogleFonts.poppins(
                             color: AppColors.resipetextColor,
                             fontSize: 11,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      const Spacer(),
-                      GestureDetector(
-                        onTap: _toggleFavorite,
-                        child: SvgPicture.asset(
-                          isFav
-                              ? AppImages.saveselected
-                              : AppImages.saveUnSelected,
-                          height: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                    ],
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: _toggleFavorite,
+                          child: SvgPicture.asset(
+                            isFav
+                                ? AppImages.saveselected
+                                : AppImages.saveUnSelected,
+                            height: 20,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+              ),
+            ),
+          ],
+        ),
+        // recipe image
+        Positioned(
+          bottom: 160,
+          left: 40,
+          child: CircleAvatar(
+            radius: 40,
+            backgroundColor: Colors.grey.shade200,
+            backgroundImage: widget.recipe.image.isNotEmpty
+                ? NetworkImage(widget.recipe.image)
+                : null,
+            child: widget.recipe.image.isEmpty
+                ? const Icon(Icons.restaurant, size: 40, color: Colors.grey)
+                : null,
+          ),
+        ),
+        // rating badge
+        Positioned(
+          top: 30,
+          left: 105,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: AppColors.rateContainerColor,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              children: [
+                SvgPicture.asset('assets/icons/rate_star.svg'),
+                const SizedBox(width: 5),
+                Text(
+                  widget.recipe.rating.toStringAsFixed(1),
+                  style: GoogleFonts.poppins(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.blackColor,
                   ),
                 )
               ],
             ),
           ),
-        ],
-      ),
-      Positioned(
-        bottom: 160,
-        left: 40,
-        child: Container(
-          height: 80,
-          width: 80,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(40),
-            child: widget.recipe.image.isNotEmpty
-                ? Image.network(
-                    widget.recipe.image,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey[300],
-                        child: Icon(
-                          Icons.restaurant,
-                          color: Colors.grey[600],
-                          size: 40,
-                        ),
-                      );
-                    },
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        color: Colors.grey[300],
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : null,
-                            strokeWidth: 2,
-                          ),
-                        ),
-                      );
-                    },
-                  )
-                : Container(
-                    color: Colors.grey[300],
-                    child: Icon(
-                      Icons.restaurant,
-                      color: Colors.grey[600],
-                      size: 40,
-                    ),
-                  ),
-          ),
         ),
-      ),
-      Positioned(
-        top: 30,
-        left: 105,
-        child: Container(
-          width: 40,
-          height: 23,
-          decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              color: AppColors.rateContainerColor),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset('assets/icons/rate_star.svg'),
-              const SizedBox(width: 5),
-              Text(
-                widget.recipe.rating.toStringAsFixed(1),
-                style: GoogleFonts.poppins(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.blackColor),
-              )
-            ],
-          ),
-        ),
-      ),
-    ]);
+      ],
+    );
   }
 }
+
+// simple text style for error/fallback
+final _errorStyle = GoogleFonts.poppins(
+  fontSize: 14,
+  fontWeight: FontWeight.w500,
+  color: Colors.grey[600],
+);

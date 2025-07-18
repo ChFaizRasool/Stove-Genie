@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:stove_genie/bloc/cubit/auth_cubit.dart';
+import 'package:stove_genie/core/di_container.dart';
 import 'package:stove_genie/utils/colors.dart';
 import 'package:stove_genie/utils/images.dart';
 import 'package:stove_genie/widget/google_container.dart';
@@ -34,18 +36,25 @@ class SignInDivierRow extends StatelessWidget {
           ),
         ),
         SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 110),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GoogleContainer(image: AppImages.googleImage),
-              // SizedBox(width: 20),
-              // GoogleContainer(image: AppImages.facebookImage),
-            ],
+        GestureDetector(
+          onTap: () {
+            _authCubit.signInWithGoogle(context);
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 110),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GoogleContainer(image: AppImages.googleImage),
+                // SizedBox(width: 20),
+                // GoogleContainer(image: AppImages.facebookImage),
+              ],
+            ),
           ),
         ),
       ],
     );
   }
 }
+
+final AuthCubit _authCubit = Di().sl<AuthCubit>();

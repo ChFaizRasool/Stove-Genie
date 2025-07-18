@@ -9,6 +9,7 @@ import 'package:stove_genie/helpers/warning_helper.dart';
 import 'package:stove_genie/models/user/user_model.dart';
 import 'package:stove_genie/pages/bottom_bar/presentation/screen/bottombar_screen.dart';
 import 'package:stove_genie/pages/sign_in/presentation/screen/sign_in_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
@@ -203,6 +204,49 @@ class AuthCubit extends Cubit<AuthState> {
       );
     } catch (e) {
       log('Sign out error: $e');
+    }
+  }
+
+  /// inside your AuthCubit:
+
+  Future<void> signInWithGoogle(BuildContext context) async {
+    emit(AuthLoading());
+    try {
+      await GoogleSignIn.instance.initialize(
+        serverClientId:
+            '238511471890-m6m1065ng1ppqi7hpdjekulcoa6fo8is.apps.googleusercontent.com',
+      );
+
+      final googleUser = await GoogleSignIn.instance.authenticate();
+      if (googleUser == null) {
+        emit(AuthError());
+        return;
+      }
+
+      final googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+
+      final userCred =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      final firebaseUser = userCred.user;
+      if (firebaseUser == null) {
+        emit(AuthError());
+        return;
+      }
+
+      emit(AuthLoaded());
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => HomeBottomBar()),
+        (_) => false,
+      );
+      WarningHelper.showSuccesToast(
+          'Successfully signed in with Google', context);
+    } catch (e) {
+      emit(AuthError());
+      log('Google sign-in error: $e');
+      WarningHelper.showErrorToast('Google sign-in failed: $e', context);
     }
   }
 }

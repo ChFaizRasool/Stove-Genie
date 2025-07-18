@@ -8,32 +8,40 @@ part of 'user_model.dart';
 
 _$UserModelImpl _$$UserModelImplFromJson(Map<String, dynamic> json) =>
     _$UserModelImpl(
-      id: json['id'] as String? ?? "",
-      name: json['name'] as String? ?? "",
-      email: json['email'] as String? ?? "",
-      number: json['number'] as String? ?? "",
-      city: json['city'] as String? ?? "",
-      licenseId: json['licenseId'] as String? ?? "",
-      service: json['service'] as String? ?? "",
-      image: json['image'] as String? ?? "",
-      notifications: json['notifications'] as bool? ?? false,
-      pushToken: json['pushToken'] as String? ?? "",
-      state: json['state'] as String? ?? "",
-      online: json['online'] as bool? ?? false,
-      createdAt: json['createdAt'] as String? ?? "",
-      price: (json['price'] as num?)?.toDouble() ?? 0.0,
-      experience: (json['experience'] as num?)?.toDouble() ?? 0.0,
-      orderCompleted: (json['orderCompleted'] as num?)?.toInt() ?? 0,
-      bio: json['bio'] as String? ?? "",
-      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
-      skills: (json['skills'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
-      followers: (json['followers'] as num?)?.toInt() ?? 0,
-      following: (json['following'] as num?)?.toInt() ?? 0,
-      uploadedRecipesCount:
-          (json['uploadedRecipesCount'] as num?)?.toInt() ?? 0,
+      id: json['id'] == null ? "" : _stringFromAny(json['id']),
+      name: json['name'] == null ? "" : _stringFromAny(json['name']),
+      email: json['email'] == null ? "" : _stringFromAny(json['email']),
+      number: json['number'] == null ? "" : _stringFromAny(json['number']),
+      city: json['city'] == null ? "" : _stringFromAny(json['city']),
+      licenseId:
+          json['licenseId'] == null ? "" : _stringFromAny(json['licenseId']),
+      service: json['service'] == null ? "" : _stringFromAny(json['service']),
+      image: json['image'] == null ? "" : _stringFromAny(json['image']),
+      notifications: json['notifications'] == null
+          ? false
+          : _boolFromAny(json['notifications']),
+      pushToken:
+          json['pushToken'] == null ? "" : _stringFromAny(json['pushToken']),
+      state: json['state'] == null ? "" : _stringFromAny(json['state']),
+      online: json['online'] == null ? false : _boolFromAny(json['online']),
+      createdAt:
+          json['createdAt'] == null ? "" : _stringFromAny(json['createdAt']),
+      price: json['price'] == null ? 0.0 : _doubleFromAny(json['price']),
+      experience:
+          json['experience'] == null ? 0.0 : _doubleFromAny(json['experience']),
+      orderCompleted: json['orderCompleted'] == null
+          ? 0
+          : _intFromAny(json['orderCompleted']),
+      bio: json['bio'] == null ? "" : _stringFromAny(json['bio']),
+      rating: json['rating'] == null ? 0.0 : _doubleFromAny(json['rating']),
+      skills: json['skills'] == null
+          ? const <String>[]
+          : _stringListFromAny(json['skills']),
+      followers: json['followers'] == null ? 0 : _intFromAny(json['followers']),
+      following: json['following'] == null ? 0 : _intFromAny(json['following']),
+      uploadedRecipesCount: json['uploadedRecipesCount'] == null
+          ? 0
+          : _intFromAny(json['uploadedRecipesCount']),
     );
 
 Map<String, dynamic> _$$UserModelImplToJson(_$UserModelImpl instance) =>

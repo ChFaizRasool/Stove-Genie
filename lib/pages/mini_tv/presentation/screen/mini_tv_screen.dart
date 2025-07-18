@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stove_genie/pages/mini_tv/presentation/screen/youtuve_player_screen.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:stove_genie/utils/colors.dart';
 
 class MiniTvScreen extends StatefulWidget {
   const MiniTvScreen({super.key});
@@ -88,13 +88,12 @@ class _MiniTvScreenState extends State<MiniTvScreen>
     if (apiKey == 'YOUR_YOUTUBE_API_KEY_HERE' || useMockData) {
       await Future.delayed(const Duration(seconds: 2));
       setState(() {
-        videos = _getMockVideoData();
+        videos = _getMockVideoDataForChannel(channelId);
         isLoading = false;
       });
       _slideController.forward();
       return;
     }
-    // Rest of your API logic here...
   }
 
   String _formatCount(String count) {
@@ -106,11 +105,13 @@ class _MiniTvScreenState extends State<MiniTvScreen>
     }
     return number.toString();
   }
+// inside your _MiniTvScreenState:
 
+  /// no change to your channel data
   List<Map<String, dynamic>> _getMockChannelData() {
     return [
       {
-        'id': 'UCJFp8uSYCjXOMnkUyb3CQ3Q', // Tasty's real channel ID
+        'id': 'UCJFp8uSYCjXOMnkUyb3CQ3Q', // Tasty
         'title': 'Tasty',
         'thumbnail': 'https://picsum.photos/200/200?random=1',
         'subscribers': '21.2M',
@@ -128,7 +129,7 @@ class _MiniTvScreenState extends State<MiniTvScreen>
         'description': 'Cooking videos from the Bon Appétit test kitchen.',
       },
       {
-        'id': 'UCRIZtPl9nb9RiXc9btSTQNw', // Food Network
+        'id': 'UCRIYplQFdur_mHLBJIDwZww', // Food Network
         'title': 'Food Network',
         'thumbnail': 'https://picsum.photos/200/200?random=3',
         'subscribers': '9.2M',
@@ -138,7 +139,7 @@ class _MiniTvScreenState extends State<MiniTvScreen>
             'Official Food Network channel with recipes and cooking shows.',
       },
       {
-        'id': 'UCJHA_jMfCvEnv-3kRjTCQXw', // Binging with Babish
+        'id': 'UCekQr9znsk2vWxBo3YiLq2w', // Binging with Babish
         'title': 'Binging with Babish',
         'thumbnail': 'https://picsum.photos/200/200?random=4',
         'subscribers': '10.1M',
@@ -155,57 +156,157 @@ class _MiniTvScreenState extends State<MiniTvScreen>
         'views': '890M',
         'description': 'Authentic Korean cooking recipes and techniques.',
       },
+      {
+        'id': 'UCVVAnxQ2YMC_qlc7QfPA2YQ', // Brothers Green Eats
+        'title': 'Brothers Green Eats',
+        'thumbnail': 'https://picsum.photos/200/200?random=6',
+        'subscribers': '1.2M',
+        'videos': '300',
+        'views': '150M',
+        'description': 'Creative cooking and food hacks.',
+      },
     ];
   }
 
-  List<Map<String, dynamic>> _getMockVideoData() {
-    return [
-      {
-        'videoId': 'mock_video_1',
-        'title': 'Easy 15-Minute Pasta Recipe',
-        'thumbnail': 'https://picsum.photos/400/300?random=10',
-        'channelTitle': 'Tasty',
-        'publishedAt': '2024-07-01T10:00:00Z',
-        'description':
-            'Learn how to make delicious pasta in just 15 minutes with simple ingredients.',
-      },
-      {
-        'videoId': 'mock_video_2',
-        'title': 'Perfect Chocolate Chip Cookies',
-        'thumbnail': 'https://picsum.photos/400/300?random=11',
-        'channelTitle': 'Tasty',
-        'publishedAt': '2024-06-28T14:30:00Z',
-        'description':
-            'The ultimate chocolate chip cookie recipe that will make your kitchen smell amazing.',
-      },
-      {
-        'videoId': 'mock_video_3',
-        'title': 'Homemade Pizza From Scratch',
-        'thumbnail': 'https://picsum.photos/400/300?random=12',
-        'channelTitle': 'Tasty',
-        'publishedAt': '2024-06-25T09:15:00Z',
-        'description':
-            'Make restaurant-quality pizza at home with this step-by-step guide.',
-      },
-      {
-        'videoId': 'mock_video_4',
-        'title': 'Fresh Summer Salad Ideas',
-        'thumbnail': 'https://picsum.photos/400/300?random=13',
-        'channelTitle': 'Tasty',
-        'publishedAt': '2024-06-20T16:45:00Z',
-        'description':
-            'Refreshing and healthy salad recipes perfect for hot summer days.',
-      },
-      {
-        'videoId': 'mock_video_5',
-        'title': 'Grilled Chicken Masterclass',
-        'thumbnail': 'https://picsum.photos/400/300?random=14',
-        'channelTitle': 'Tasty',
-        'publishedAt': '2024-06-18T11:20:00Z',
-        'description':
-            'Learn the secrets to perfectly grilled chicken every time.',
-      },
-    ];
+  /// channel-aware mock videos
+  List<Map<String, dynamic>> _getMockVideoDataForChannel(String channelId) {
+    switch (channelId) {
+      case 'UCJFp8uSYCjXOMnkUyb3CQ3Q': // Tasty
+        return [
+          {
+            'videoId': 'icr2j-IF5Zw',
+            'title': 'Tasty’s Classic 4 Meals Anyone Can Make Tonight',
+            'thumbnail': 'https://i.ytimg.com/vi/icr2j-IF5Zw/hqdefault.jpg',
+            'channelTitle': 'Tasty',
+            'publishedAt': '2024-09-10T12:00:00Z',
+            'description':
+                'Try these 4 quick meal recipes that anyone can make.',
+          },
+          {
+            'videoId': 'pQPxPjUvBJQ',
+            'title': 'Tasty 101: Mastering Breakfast',
+            'thumbnail': 'https://i.ytimg.com/vi/pQPxPjUvBJQ/hqdefault.jpg',
+            'channelTitle': 'Tasty',
+            'publishedAt': '2024-08-05T08:30:00Z',
+            'description':
+                'Everything you need to know to make perfect eggs, pancakes, and more.',
+          },
+          {
+            'videoId': '9_5wHw6l11o',
+            'title': '7 Recipes You Can Make In 5 Minutes',
+            'thumbnail': 'https://i.ytimg.com/vi/9_5wHw6l11o/hqdefault.jpg',
+            'channelTitle': 'Tasty',
+            'publishedAt': '2024-07-22T14:15:00Z',
+            'description':
+                'Super-fast, delicious recipes for your busiest days.',
+          },
+        ];
+
+      case 'UCbpMy0Fg74eXXkvxJrtEn3w': // Bon Appétit
+        return [
+          {
+            'videoId': 'iYMcvGktqhU',
+            'title': 'Recreating Maangchi’s Seafood Kimchi Fried Rice',
+            'thumbnail': 'https://i.ytimg.com/vi/iYMcvGktqhU/hqdefault.jpg',
+            'channelTitle': 'Bon Appétit',
+            'publishedAt': '2024-06-30T16:00:00Z',
+            'description': 'We try Maangchi’s viral seafood fried rice recipe.',
+          },
+          {
+            'videoId': '3M_BW_6PX54',
+            'title': 'Pro Chef Tries Pancake Art for the First Time',
+            'thumbnail': 'https://i.ytimg.com/vi/3M_BW_6PX54/hqdefault.jpg',
+            'channelTitle': 'Bon Appétit',
+            'publishedAt': '2024-05-18T10:45:00Z',
+            'description':
+                'Chef Chris O’Donnell attempts pancake art challenges.',
+          },
+        ];
+
+      case 'UCRIYplQFdur_mHLBJIDwZww': // Food Network
+        return [
+          {
+            'videoId': 'Jga_QNfQHw0',
+            'title': 'Chopped: Huckleberries, Black Beans, Octopus',
+            'thumbnail': 'https://i.ytimg.com/vi/Jga_QNfQHw0/hqdefault.jpg',
+            'channelTitle': 'Food Network',
+            'publishedAt': '2024-08-12T18:00:00Z',
+            'description': 'Highlights from our latest Chopped episode.',
+          },
+          {
+            'videoId': '7ueGDhuWvbU',
+            'title': 'Top Tomato Recipe Videos',
+            'thumbnail': 'https://i.ytimg.com/vi/7ueGDhuWvbU/hqdefault.jpg',
+            'channelTitle': 'Food Network',
+            'publishedAt': '2024-07-25T09:30:00Z',
+            'description':
+                'Our favorite tomato dishes straight from Food Network chefs.',
+          },
+        ];
+
+      case 'UCekQr9znsk2vWxBo3YiLq2w': // Binging with Babish
+        return [
+          {
+            'videoId': '5inVS8RSz7Q',
+            'title': 'Ranking Your STRANGEST Recipes',
+            'thumbnail': 'https://i.ytimg.com/vi/5inVS8RSz7Q/hqdefault.jpg',
+            'channelTitle': 'Binging with Babish',
+            'publishedAt': '2024-06-15T12:20:00Z',
+            'description': 'I taste and rank some of your strangest requests.',
+          },
+          {
+            'videoId': 'lz7dl6vq9NU',
+            'title': 'Disney Movie Food Marathon',
+            'thumbnail': 'https://i.ytimg.com/vi/lz7dl6vq9NU/hqdefault.jpg',
+            'channelTitle': 'Binging with Babish',
+            'publishedAt': '2024-05-02T14:00:00Z',
+            'description': 'Cooking foods inspired by classic Disney movies.',
+          },
+        ];
+
+      case 'UC8fDlq1wKJWs4zCzY9Dr9QA': // Maangchi
+        return [
+          {
+            'videoId': 'eTucCw1w6Ak',
+            'title': 'Traditional Tongbaechu‐Kimchi Recipe',
+            'thumbnail': 'https://i.ytimg.com/vi/eTucCw1w6Ak/hqdefault.jpg',
+            'channelTitle': 'Maangchi',
+            'publishedAt': '2024-04-10T11:00:00Z',
+            'description': 'Step‐by‐step kimchi making at home.',
+          },
+          {
+            'videoId': 'Y-Td1-dJQ-c',
+            'title': 'Kimchi Made with Love',
+            'thumbnail': 'https://i.ytimg.com/vi/Y-Td1-dJQ-c/hqdefault.jpg',
+            'channelTitle': 'Maangchi',
+            'publishedAt': '2024-03-22T15:30:00Z',
+            'description': 'Stories from the kitchen while we make kimchi.',
+          },
+        ];
+
+      case 'UCVVAnxQ2YMC_qlc7QfPA2YQ': // Brothers Green Eats
+        return [
+          {
+            'videoId': 'F85TTMCdIj0',
+            'title': 'Food Hack: Garlic Sauce',
+            'thumbnail': 'https://i.ytimg.com/vi/F85TTMCdIj0/hqdefault.jpg',
+            'channelTitle': 'Brothers Green Eats',
+            'publishedAt': '2024-02-14T13:45:00Z',
+            'description': 'A 3‐ingredient garlic sauce hack you need to try.',
+          },
+          {
+            'videoId': 'y8iQL18X8Tc',
+            'title': '5-Ingredient Stoner Snacks',
+            'thumbnail': 'https://i.ytimg.com/vi/y8iQL18X8Tc/hqdefault.jpg',
+            'channelTitle': 'Brothers Green Eats',
+            'publishedAt': '2024-01-30T17:10:00Z',
+            'description': 'Cheap, easy, and ridiculous snack ideas.',
+          },
+        ];
+
+      default:
+        return [];
+    }
   }
 
   String _formatDate(String dateString) {
@@ -264,7 +365,7 @@ class _MiniTvScreenState extends State<MiniTvScreen>
         ],
         border: Border(
           bottom: BorderSide(
-            color: const Color(0xFF6C63FF).withOpacity(0.2),
+            color: AppColors.buttonColor.withOpacity(0.2),
             width: 2,
           ),
         ),
@@ -274,13 +375,11 @@ class _MiniTvScreenState extends State<MiniTvScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF6C63FF), Color(0xFF5A52FF)],
-              ),
+              color: AppColors.buttonColor,
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF6C63FF).withOpacity(0.3),
+                  color: AppColors.buttonColor.withOpacity(0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -354,12 +453,10 @@ class _MiniTvScreenState extends State<MiniTvScreen>
             height: 100,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: const LinearGradient(
-                colors: [Color(0xFF6C63FF), Color(0xFF9F7AEA)],
-              ),
+              color: AppColors.buttonColor,
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF6C63FF).withOpacity(0.3),
+                  color: AppColors.buttonColor.withOpacity(0.3),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -394,9 +491,7 @@ class _MiniTvScreenState extends State<MiniTvScreen>
               alignment: Alignment.centerLeft,
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF6C63FF), Color(0xFF9F7AEA)],
-                  ),
+                  color: AppColors.buttonColor,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -418,7 +513,7 @@ class _MiniTvScreenState extends State<MiniTvScreen>
         padding: const EdgeInsets.all(20),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: 0.8,
+          childAspectRatio: 0.78,
           crossAxisSpacing: 15,
           mainAxisSpacing: 15,
         ),
@@ -537,7 +632,7 @@ class _MiniTvScreenState extends State<MiniTvScreen>
                             children: [
                               Icon(
                                 Icons.people_outline,
-                                color: const Color(0xFF6C63FF),
+                                color: AppColors.buttonColor,
                                 size: 14,
                               ),
                               const SizedBox(width: 4),
@@ -558,7 +653,7 @@ class _MiniTvScreenState extends State<MiniTvScreen>
                             children: [
                               Icon(
                                 Icons.video_library_outlined,
-                                color: const Color(0xFF9F7AEA),
+                                color: AppColors.buttonColor,
                                 size: 14,
                               ),
                               const SizedBox(width: 4),
@@ -655,9 +750,17 @@ class _MiniTvScreenState extends State<MiniTvScreen>
                           ),
                           child: GestureDetector(
                             onTap: () {
-                              final videoId = video['videoId'];
-
-                              _launchYoutubeChannel();
+                              final id = video['videoId'] as String;
+                              final fullUrl =
+                                  'https://www.youtube.com/watch?v=$id';
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => YoutubeVideoPlayerScreen(
+                                    videoUrl: fullUrl,
+                                  ),
+                                ),
+                              );
                             },
                             child: Container(
                               padding: const EdgeInsets.all(15),
@@ -674,7 +777,7 @@ class _MiniTvScreenState extends State<MiniTvScreen>
                               ),
                               child: const Icon(
                                 Icons.play_arrow,
-                                color: Color(0xFF6C63FF),
+                                color: AppColors.buttonColor,
                                 size: 30,
                               ),
                             ),
@@ -727,9 +830,7 @@ class _MiniTvScreenState extends State<MiniTvScreen>
                           Container(
                             padding: const EdgeInsets.all(2),
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFF6C63FF), Color(0xFF9F7AEA)],
-                              ),
+                              color: AppColors.buttonColor,
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
@@ -769,16 +870,5 @@ class _MiniTvScreenState extends State<MiniTvScreen>
         },
       ),
     );
-  }
-
-  Future<void> _launchYoutubeChannel() async {
-    final Uri url = Uri.parse('https://www.youtube.com/channel/dQw4w9WgXcQ');
-
-    if (!await launchUrl(
-      url,
-      mode: LaunchMode.externalApplication,
-    )) {
-      throw Exception('Could not launch $url');
-    }
   }
 }

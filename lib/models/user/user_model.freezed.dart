@@ -20,28 +20,50 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$UserModel {
+  @JsonKey(fromJson: _stringFromAny)
   String get id => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _stringFromAny)
   String get name => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _stringFromAny)
   String get email => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _stringFromAny)
   String get number => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _stringFromAny)
   String get city => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _stringFromAny)
   String get licenseId => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _stringFromAny)
   String get service => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _stringFromAny)
   String get image => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _boolFromAny)
   bool get notifications => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _stringFromAny)
   String get pushToken => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _stringFromAny)
   String get state => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _boolFromAny)
   bool get online => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _stringFromAny)
   String get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _doubleFromAny)
   double get price => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _doubleFromAny)
   double get experience => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _intFromAny)
   int get orderCompleted => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _stringFromAny)
   String get bio => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _doubleFromAny)
   double get rating => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _stringListFromAny)
   List<String> get skills => throw _privateConstructorUsedError;
-  int? get followers => throw _privateConstructorUsedError;
-  int? get following => throw _privateConstructorUsedError;
-  int? get uploadedRecipesCount => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _intFromAny)
+  int get followers => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _intFromAny)
+  int get following => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _intFromAny)
+  int get uploadedRecipesCount => throw _privateConstructorUsedError;
 
   /// Serializes this UserModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -59,28 +81,28 @@ abstract class $UserModelCopyWith<$Res> {
       _$UserModelCopyWithImpl<$Res, UserModel>;
   @useResult
   $Res call(
-      {String id,
-      String name,
-      String email,
-      String number,
-      String city,
-      String licenseId,
-      String service,
-      String image,
-      bool notifications,
-      String pushToken,
-      String state,
-      bool online,
-      String createdAt,
-      double price,
-      double experience,
-      int orderCompleted,
-      String bio,
-      double rating,
-      List<String> skills,
-      int? followers,
-      int? following,
-      int? uploadedRecipesCount});
+      {@JsonKey(fromJson: _stringFromAny) String id,
+      @JsonKey(fromJson: _stringFromAny) String name,
+      @JsonKey(fromJson: _stringFromAny) String email,
+      @JsonKey(fromJson: _stringFromAny) String number,
+      @JsonKey(fromJson: _stringFromAny) String city,
+      @JsonKey(fromJson: _stringFromAny) String licenseId,
+      @JsonKey(fromJson: _stringFromAny) String service,
+      @JsonKey(fromJson: _stringFromAny) String image,
+      @JsonKey(fromJson: _boolFromAny) bool notifications,
+      @JsonKey(fromJson: _stringFromAny) String pushToken,
+      @JsonKey(fromJson: _stringFromAny) String state,
+      @JsonKey(fromJson: _boolFromAny) bool online,
+      @JsonKey(fromJson: _stringFromAny) String createdAt,
+      @JsonKey(fromJson: _doubleFromAny) double price,
+      @JsonKey(fromJson: _doubleFromAny) double experience,
+      @JsonKey(fromJson: _intFromAny) int orderCompleted,
+      @JsonKey(fromJson: _stringFromAny) String bio,
+      @JsonKey(fromJson: _doubleFromAny) double rating,
+      @JsonKey(fromJson: _stringListFromAny) List<String> skills,
+      @JsonKey(fromJson: _intFromAny) int followers,
+      @JsonKey(fromJson: _intFromAny) int following,
+      @JsonKey(fromJson: _intFromAny) int uploadedRecipesCount});
 }
 
 /// @nodoc
@@ -117,9 +139,9 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? bio = null,
     Object? rating = null,
     Object? skills = null,
-    Object? followers = freezed,
-    Object? following = freezed,
-    Object? uploadedRecipesCount = freezed,
+    Object? followers = null,
+    Object? following = null,
+    Object? uploadedRecipesCount = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -198,18 +220,18 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.skills
           : skills // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      followers: freezed == followers
+      followers: null == followers
           ? _value.followers
           : followers // ignore: cast_nullable_to_non_nullable
-              as int?,
-      following: freezed == following
+              as int,
+      following: null == following
           ? _value.following
           : following // ignore: cast_nullable_to_non_nullable
-              as int?,
-      uploadedRecipesCount: freezed == uploadedRecipesCount
+              as int,
+      uploadedRecipesCount: null == uploadedRecipesCount
           ? _value.uploadedRecipesCount
           : uploadedRecipesCount // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
     ) as $Val);
   }
 }
@@ -223,28 +245,28 @@ abstract class _$$UserModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
-      String name,
-      String email,
-      String number,
-      String city,
-      String licenseId,
-      String service,
-      String image,
-      bool notifications,
-      String pushToken,
-      String state,
-      bool online,
-      String createdAt,
-      double price,
-      double experience,
-      int orderCompleted,
-      String bio,
-      double rating,
-      List<String> skills,
-      int? followers,
-      int? following,
-      int? uploadedRecipesCount});
+      {@JsonKey(fromJson: _stringFromAny) String id,
+      @JsonKey(fromJson: _stringFromAny) String name,
+      @JsonKey(fromJson: _stringFromAny) String email,
+      @JsonKey(fromJson: _stringFromAny) String number,
+      @JsonKey(fromJson: _stringFromAny) String city,
+      @JsonKey(fromJson: _stringFromAny) String licenseId,
+      @JsonKey(fromJson: _stringFromAny) String service,
+      @JsonKey(fromJson: _stringFromAny) String image,
+      @JsonKey(fromJson: _boolFromAny) bool notifications,
+      @JsonKey(fromJson: _stringFromAny) String pushToken,
+      @JsonKey(fromJson: _stringFromAny) String state,
+      @JsonKey(fromJson: _boolFromAny) bool online,
+      @JsonKey(fromJson: _stringFromAny) String createdAt,
+      @JsonKey(fromJson: _doubleFromAny) double price,
+      @JsonKey(fromJson: _doubleFromAny) double experience,
+      @JsonKey(fromJson: _intFromAny) int orderCompleted,
+      @JsonKey(fromJson: _stringFromAny) String bio,
+      @JsonKey(fromJson: _doubleFromAny) double rating,
+      @JsonKey(fromJson: _stringListFromAny) List<String> skills,
+      @JsonKey(fromJson: _intFromAny) int followers,
+      @JsonKey(fromJson: _intFromAny) int following,
+      @JsonKey(fromJson: _intFromAny) int uploadedRecipesCount});
 }
 
 /// @nodoc
@@ -279,9 +301,9 @@ class __$$UserModelImplCopyWithImpl<$Res>
     Object? bio = null,
     Object? rating = null,
     Object? skills = null,
-    Object? followers = freezed,
-    Object? following = freezed,
-    Object? uploadedRecipesCount = freezed,
+    Object? followers = null,
+    Object? following = null,
+    Object? uploadedRecipesCount = null,
   }) {
     return _then(_$UserModelImpl(
       id: null == id
@@ -360,18 +382,18 @@ class __$$UserModelImplCopyWithImpl<$Res>
           ? _value._skills
           : skills // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      followers: freezed == followers
+      followers: null == followers
           ? _value.followers
           : followers // ignore: cast_nullable_to_non_nullable
-              as int?,
-      following: freezed == following
+              as int,
+      following: null == following
           ? _value.following
           : following // ignore: cast_nullable_to_non_nullable
-              as int?,
-      uploadedRecipesCount: freezed == uploadedRecipesCount
+              as int,
+      uploadedRecipesCount: null == uploadedRecipesCount
           ? _value.uploadedRecipesCount
           : uploadedRecipesCount // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
     ));
   }
 }
@@ -380,90 +402,91 @@ class __$$UserModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$UserModelImpl implements _UserModel {
   const _$UserModelImpl(
-      {this.id = "",
-      this.name = "",
-      this.email = "",
-      this.number = "",
-      this.city = "",
-      this.licenseId = "",
-      this.service = "",
-      this.image = "",
-      this.notifications = false,
-      this.pushToken = "",
-      this.state = "",
-      this.online = false,
-      this.createdAt = "",
-      this.price = 0.0,
-      this.experience = 0.0,
-      this.orderCompleted = 0,
-      this.bio = "",
-      this.rating = 0.0,
-      final List<String> skills = const [],
-      this.followers = 0,
-      this.following = 0,
-      this.uploadedRecipesCount = 0})
+      {@JsonKey(fromJson: _stringFromAny) this.id = "",
+      @JsonKey(fromJson: _stringFromAny) this.name = "",
+      @JsonKey(fromJson: _stringFromAny) this.email = "",
+      @JsonKey(fromJson: _stringFromAny) this.number = "",
+      @JsonKey(fromJson: _stringFromAny) this.city = "",
+      @JsonKey(fromJson: _stringFromAny) this.licenseId = "",
+      @JsonKey(fromJson: _stringFromAny) this.service = "",
+      @JsonKey(fromJson: _stringFromAny) this.image = "",
+      @JsonKey(fromJson: _boolFromAny) this.notifications = false,
+      @JsonKey(fromJson: _stringFromAny) this.pushToken = "",
+      @JsonKey(fromJson: _stringFromAny) this.state = "",
+      @JsonKey(fromJson: _boolFromAny) this.online = false,
+      @JsonKey(fromJson: _stringFromAny) this.createdAt = "",
+      @JsonKey(fromJson: _doubleFromAny) this.price = 0.0,
+      @JsonKey(fromJson: _doubleFromAny) this.experience = 0.0,
+      @JsonKey(fromJson: _intFromAny) this.orderCompleted = 0,
+      @JsonKey(fromJson: _stringFromAny) this.bio = "",
+      @JsonKey(fromJson: _doubleFromAny) this.rating = 0.0,
+      @JsonKey(fromJson: _stringListFromAny)
+      final List<String> skills = const <String>[],
+      @JsonKey(fromJson: _intFromAny) this.followers = 0,
+      @JsonKey(fromJson: _intFromAny) this.following = 0,
+      @JsonKey(fromJson: _intFromAny) this.uploadedRecipesCount = 0})
       : _skills = skills;
 
   factory _$UserModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserModelImplFromJson(json);
 
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _stringFromAny)
   final String id;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _stringFromAny)
   final String name;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _stringFromAny)
   final String email;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _stringFromAny)
   final String number;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _stringFromAny)
   final String city;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _stringFromAny)
   final String licenseId;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _stringFromAny)
   final String service;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _stringFromAny)
   final String image;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _boolFromAny)
   final bool notifications;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _stringFromAny)
   final String pushToken;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _stringFromAny)
   final String state;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _boolFromAny)
   final bool online;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _stringFromAny)
   final String createdAt;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _doubleFromAny)
   final double price;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _doubleFromAny)
   final double experience;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _intFromAny)
   final int orderCompleted;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _stringFromAny)
   final String bio;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _doubleFromAny)
   final double rating;
   final List<String> _skills;
   @override
-  @JsonKey()
+  @JsonKey(fromJson: _stringListFromAny)
   List<String> get skills {
     if (_skills is EqualUnmodifiableListView) return _skills;
     // ignore: implicit_dynamic_type
@@ -471,14 +494,14 @@ class _$UserModelImpl implements _UserModel {
   }
 
   @override
-  @JsonKey()
-  final int? followers;
+  @JsonKey(fromJson: _intFromAny)
+  final int followers;
   @override
-  @JsonKey()
-  final int? following;
+  @JsonKey(fromJson: _intFromAny)
+  final int following;
   @override
-  @JsonKey()
-  final int? uploadedRecipesCount;
+  @JsonKey(fromJson: _intFromAny)
+  final int uploadedRecipesCount;
 
   @override
   String toString() {
@@ -569,76 +592,99 @@ class _$UserModelImpl implements _UserModel {
 
 abstract class _UserModel implements UserModel {
   const factory _UserModel(
-      {final String id,
-      final String name,
-      final String email,
-      final String number,
-      final String city,
-      final String licenseId,
-      final String service,
-      final String image,
-      final bool notifications,
-      final String pushToken,
-      final String state,
-      final bool online,
-      final String createdAt,
-      final double price,
-      final double experience,
-      final int orderCompleted,
-      final String bio,
-      final double rating,
-      final List<String> skills,
-      final int? followers,
-      final int? following,
-      final int? uploadedRecipesCount}) = _$UserModelImpl;
+          {@JsonKey(fromJson: _stringFromAny) final String id,
+          @JsonKey(fromJson: _stringFromAny) final String name,
+          @JsonKey(fromJson: _stringFromAny) final String email,
+          @JsonKey(fromJson: _stringFromAny) final String number,
+          @JsonKey(fromJson: _stringFromAny) final String city,
+          @JsonKey(fromJson: _stringFromAny) final String licenseId,
+          @JsonKey(fromJson: _stringFromAny) final String service,
+          @JsonKey(fromJson: _stringFromAny) final String image,
+          @JsonKey(fromJson: _boolFromAny) final bool notifications,
+          @JsonKey(fromJson: _stringFromAny) final String pushToken,
+          @JsonKey(fromJson: _stringFromAny) final String state,
+          @JsonKey(fromJson: _boolFromAny) final bool online,
+          @JsonKey(fromJson: _stringFromAny) final String createdAt,
+          @JsonKey(fromJson: _doubleFromAny) final double price,
+          @JsonKey(fromJson: _doubleFromAny) final double experience,
+          @JsonKey(fromJson: _intFromAny) final int orderCompleted,
+          @JsonKey(fromJson: _stringFromAny) final String bio,
+          @JsonKey(fromJson: _doubleFromAny) final double rating,
+          @JsonKey(fromJson: _stringListFromAny) final List<String> skills,
+          @JsonKey(fromJson: _intFromAny) final int followers,
+          @JsonKey(fromJson: _intFromAny) final int following,
+          @JsonKey(fromJson: _intFromAny) final int uploadedRecipesCount}) =
+      _$UserModelImpl;
 
   factory _UserModel.fromJson(Map<String, dynamic> json) =
       _$UserModelImpl.fromJson;
 
   @override
+  @JsonKey(fromJson: _stringFromAny)
   String get id;
   @override
+  @JsonKey(fromJson: _stringFromAny)
   String get name;
   @override
+  @JsonKey(fromJson: _stringFromAny)
   String get email;
   @override
+  @JsonKey(fromJson: _stringFromAny)
   String get number;
   @override
+  @JsonKey(fromJson: _stringFromAny)
   String get city;
   @override
+  @JsonKey(fromJson: _stringFromAny)
   String get licenseId;
   @override
+  @JsonKey(fromJson: _stringFromAny)
   String get service;
   @override
+  @JsonKey(fromJson: _stringFromAny)
   String get image;
   @override
+  @JsonKey(fromJson: _boolFromAny)
   bool get notifications;
   @override
+  @JsonKey(fromJson: _stringFromAny)
   String get pushToken;
   @override
+  @JsonKey(fromJson: _stringFromAny)
   String get state;
   @override
+  @JsonKey(fromJson: _boolFromAny)
   bool get online;
   @override
+  @JsonKey(fromJson: _stringFromAny)
   String get createdAt;
   @override
+  @JsonKey(fromJson: _doubleFromAny)
   double get price;
   @override
+  @JsonKey(fromJson: _doubleFromAny)
   double get experience;
   @override
+  @JsonKey(fromJson: _intFromAny)
   int get orderCompleted;
   @override
+  @JsonKey(fromJson: _stringFromAny)
   String get bio;
   @override
+  @JsonKey(fromJson: _doubleFromAny)
   double get rating;
   @override
+  @JsonKey(fromJson: _stringListFromAny)
   List<String> get skills;
   @override
-  int? get followers;
+  @JsonKey(fromJson: _intFromAny)
+  int get followers;
   @override
-  int? get following;
+  @JsonKey(fromJson: _intFromAny)
+  int get following;
   @override
-  int? get uploadedRecipesCount;
+  @JsonKey(fromJson: _intFromAny)
+  int get uploadedRecipesCount;
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
