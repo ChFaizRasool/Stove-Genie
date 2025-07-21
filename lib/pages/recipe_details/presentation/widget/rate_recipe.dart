@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:stove_genie/bloc/cubit/recipe_cubit.dart';
+import 'package:stove_genie/core/di_container.dart';
 
 void showRateRecipeDialog(
   BuildContext context, {
@@ -67,7 +69,7 @@ void showRateRecipeDialog(
                     onPressed: () {
                       if (selectedRating > 0) {
                         Navigator.of(context).pop();
-                        onSubmit(selectedRating); // Call the passed function
+                        onSubmit(selectedRating);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -93,3 +95,5 @@ void showRateRecipeDialog(
     },
   );
 }
+
+final _recipeCubit = Di().sl<RecipeCubit>();

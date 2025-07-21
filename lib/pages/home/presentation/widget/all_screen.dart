@@ -54,15 +54,15 @@ class _AllScreenState extends State<AllScreen> {
           );
         }
 
-        // 2) Error state
         if (state is RecipeError) {
           return Center(
               child: Text('Failed to load recipes.', style: _errorStyle));
         }
 
-        // 3) Loaded state
         if (state is RecipeLoaded) {
-          final recipes = cubit.recipeData.reversed.toList();
+          final recipes = cubit.isSearching
+              ? cubit.filterRecipeData
+              : cubit.recipeData.reversed.toList();
           if (recipes.isEmpty) {
             return Center(child: Text('No recipes found.', style: _errorStyle));
           }
@@ -180,12 +180,14 @@ class RecepieWidget extends StatefulWidget {
   final RecipeModel recipe;
   final bool isFavorite;
   final VoidCallback onFavoriteToggled;
+  final double? width;
 
   const RecepieWidget({
     super.key,
     required this.recipe,
     required this.isFavorite,
     required this.onFavoriteToggled,
+    this.width = 150,
   });
 
   @override
@@ -227,7 +229,7 @@ class _RecepieWidgetState extends State<RecepieWidget> {
             const SizedBox(height: 40),
             Container(
               height: 160,
-              width: 150,
+              width: widget.width,
               decoration: BoxDecoration(
                 color: AppColors.containeColor.withOpacity(0.5),
                 borderRadius: BorderRadius.circular(12),
@@ -316,15 +318,17 @@ class _RecepieWidgetState extends State<RecepieWidget> {
           bottom: 160,
           left: 40,
           child: CircleAvatar(
-            radius: 40,
-            backgroundColor: Colors.grey.shade200,
-            backgroundImage: widget.recipe.image.isNotEmpty
-                ? NetworkImage(widget.recipe.image)
-                : null,
-            child: widget.recipe.image.isEmpty
-                ? const Icon(Icons.restaurant, size: 40, color: Colors.grey)
-                : null,
-          ),
+              radius: 40,
+              backgroundColor: Colors.grey.shade200,
+              // backgroundImage: widget.recipe.image.isNotEmpty
+              //     ? NetworkImage(widget.recipe.image)
+              //     : null,
+              child:
+                  // widget.recipe.image.isEmpty
+                  // ?
+                  const Icon(Icons.restaurant, size: 40, color: Colors.grey)
+              // : null,
+              ),
         ),
         // rating badge
         Positioned(

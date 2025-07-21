@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stove_genie/bloc/cubit/recipe_cubit.dart';
@@ -9,131 +7,95 @@ import 'package:stove_genie/pages/home/presentation/widget/all_screen.dart';
 import 'package:stove_genie/pages/home/presentation/widget/category_button.dart';
 import 'package:stove_genie/utils/colors.dart';
 
-class CategorySwitich extends StatefulWidget {
-  const CategorySwitich({super.key});
+class CategorySwitch extends StatefulWidget {
+  const CategorySwitch({super.key});
 
   @override
-  State<CategorySwitich> createState() => _CategorySwitichState();
+  State<CategorySwitch> createState() => _CategorySwitchState();
 }
 
-class _CategorySwitichState extends State<CategorySwitich> {
-  int intialIndex = 0;
+class _CategorySwitchState extends State<CategorySwitch> {
+  late final RecipeCubit _recipeCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _recipeCubit = Di().sl<RecipeCubit>();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder(
       bloc: _recipeCubit,
       builder: (context, state) {
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: EdgeInsets.only(left: intialIndex == 0 ? 30 : 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      _recipeCubit.setCurrentIndex(0);
-                    },
-                    child: _recipeCubit.currentIndex == 0
-                        ? const CategoryButton(
-                            height: 31,
-                            widget: 54,
-                            text: 'All',
-                          )
-                        : Text(
-                            'All',
-                            style: GoogleFonts.poppins(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.buttonColor),
-                          ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      _recipeCubit.setCurrentIndex(1);
-                    },
-                    child: _recipeCubit.currentIndex == 1
-                        ? const CategoryButton(
-                            height: 31,
-                            widget: 54,
-                            text: 'Indian',
-                          )
-                        : Text(
-                            'Indian',
-                            style: GoogleFonts.poppins(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.buttonColor),
-                          ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      _recipeCubit.setCurrentIndex(2);
-                    },
-                    child: _recipeCubit.currentIndex == 2
-                        ? const CategoryButton(
-                            height: 31,
-                            widget: 54,
-                            text: 'Italian',
-                          )
-                        : Text(
-                            'Italian',
-                            style: GoogleFonts.poppins(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.buttonColor),
-                          ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      _recipeCubit.setCurrentIndex(3);
-                    },
-                    child: _recipeCubit.currentIndex == 3
-                        ? const CategoryButton(
-                            height: 31,
-                            widget: 54,
-                            text: 'Asian',
-                          )
-                        : Text(
-                            'Asian',
-                            style: GoogleFonts.poppins(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.buttonColor),
-                          ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      _recipeCubit.setCurrentIndex(4);
-                    },
-                    child: _recipeCubit.currentIndex == 4
-                        ? const CategoryButton(
-                            height: 31,
-                            widget: 54,
-                            text: 'Chinese',
-                          )
-                        : Text(
-                            'Chinese',
-                            style: GoogleFonts.poppins(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.buttonColor),
-                          ),
-                  ),
-                ],
-              ),
-            ),
-            // if (intialIndex == 0)
-
-            SizedBox(
-              height: 30,
-            ),
+            _buildCategoryList(),
+            const SizedBox(height: 24),
             const AllScreen(),
           ],
         );
       },
     );
   }
-}
 
-final _recipeCubit = Di().sl<RecipeCubit>();
+  Widget _buildCategoryList() {
+    return SizedBox(
+      height: 40,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: _recipeCubit.categories.length,
+        itemBuilder: (context, index) {
+          final text = _recipeCubit.categories[index];
+          final isSelected = _recipeCubit.currentIndex == index;
+
+          return Padding(
+            padding: EdgeInsets.only(
+              right: index == _recipeCubit.categories.length - 1 ? 0 : 12,
+            ),
+            child: GestureDetector(
+              onTap: () {
+                _recipeCubit.setCurrentIndex(index);
+                _recipeCubit.searchRecipes(text);
+              },
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: isSelected
+                    ? CategoryButton(
+                        key: ValueKey('selected_$index'),
+                        height: 31,
+                        widget: 54,
+                        text: text,
+                      )
+                    : Container(
+                        key: ValueKey('unselected_$index'),
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        child: Text(
+                          text,
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.buttonColor,
+                          ),
+                        ),
+                      ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    // Don't dispose the cubit here if it's managed by DI container
+    super.dispose();
+  }
+}

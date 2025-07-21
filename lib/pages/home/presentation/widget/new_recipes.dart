@@ -77,7 +77,9 @@ class _NewRecipesState extends State<NewRecipes> with TickerProviderStateMixin {
         if (state is RecipeLoading) {
           return _buildLoadingState();
         } else if (state is RecipeLoaded) {
-          final List<RecipeModel> recipes = _recipeCubit.recipeData;
+          final List<RecipeModel> recipes = _recipeCubit.isSearching
+              ? _recipeCubit.filterRecipeData
+              : _recipeCubit.recipeData;
 
           if (recipes.isEmpty) {
             return _buildEmptyState();
@@ -492,7 +494,7 @@ class _NewRecipesState extends State<NewRecipes> with TickerProviderStateMixin {
 
                 // Recipe Image
                 Positioned(
-                  bottom: 70,
+                  bottom: 90,
                   left: 165,
                   child: Hero(
                     tag: 'recipe-image-${recipe.id}',

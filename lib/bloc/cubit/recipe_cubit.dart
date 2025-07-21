@@ -15,11 +15,22 @@ class RecipeCubit extends Cubit<RecipeState> {
   RecipeCubit(this._recipeApi) : super(RecipeInitial());
 
   List<RecipeModel> recipeData = [];
+  List<RecipeModel> filterRecipeData = [];
   RecipeModel? singleRecipeData;
   File? selectedRecipeImage;
 
   int currentIndex = 0;
   bool isChecked = false;
+  bool isSearching = false;
+
+  final List<String> categories = [
+    'All',
+    'Indian',
+    'Italian',
+    'Asian',
+    'Chinese'
+  ];
+
   Future<void> addRecipe(
       {RecipeModel? recipe, required BuildContext context}) async {
     emit(RecipeLoading());
@@ -85,7 +96,7 @@ class RecipeCubit extends Cubit<RecipeState> {
         maxWidth: 1000,
         maxHeight: 1000,
         imageQuality: 80,
-        requestFullMetadata: false, // This can help with some Android issues
+        requestFullMetadata: false,
       );
 
       if (pickedFile != null) {
@@ -119,6 +130,33 @@ class RecipeCubit extends Cubit<RecipeState> {
   void toggleCheck(bool value) {
     emit(RecipeLoading());
     isChecked = value;
+    emit(RecipeLoaded());
+  }
+
+  void searchRecipes(String query) {
+    emit(RecipeLoading());
+    isSearching = true;
+    if (query.toLowerCase() == 'All'.toLowerCase()) {
+      filterRecipeData = recipeData;
+      emit(RecipeLoaded());
+      return;
+    } else {
+      filterRecipeData = recipeData.where(
+        (element) {
+          return element.category.toLowerCase().contains(query.toLowerCase()) ||
+              element.description.toLowerCase().contains(query.toLowerCase()) ||
+              element.title.toLowerCase().contains(query.toLowerCase());
+        },
+      ).toList();
+    }
+
+    emit(RecipeLoaded());
+  }
+
+  void cancelSearch() {
+    emit(RecipeLoading());
+    isSearching = false;
+    filterRecipeData = [];
     emit(RecipeLoaded());
   }
 }
